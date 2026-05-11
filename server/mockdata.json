@@ -1,0 +1,967 @@
+[
+  {
+    "id": 1,
+    "tripName": "Summer Trip to Da Nang",
+    "budget": 12000000,
+    "itinerary": [
+      {
+        "id": 1,
+        "title": "Flight to Da Nang",
+        "location": "Tan Son Nhat Airport",
+        "date": "2026-05-25",
+        "time": "08:00",
+        "category": "Transport",
+        "priority": "High",
+        "status": "Done"
+      },
+      {
+        "id": 2,
+        "title": "Check-in at Hotel",
+        "location": "Da Nang City Center",
+        "date": "2026-05-25",
+        "time": "11:30",
+        "category": "Hotel",
+        "priority": "Medium",
+        "status": "Done"
+      },
+      {
+        "id": 3,
+        "title": "Visit Ba Na Hills",
+        "location": "Hoa Vang District",
+        "date": "2026-05-26",
+        "time": "09:00",
+        "category": "Sightseeing",
+        "priority": "High",
+        "status": "In Progress"
+      },
+      {
+        "id": 4,
+        "title": "Dinner at Seafood Restaurant",
+        "location": "My Khe Beach",
+        "date": "2026-05-26",
+        "time": "19:00",
+        "category": "Food",
+        "priority": "Medium",
+        "status": "Planned"
+      },
+      {
+        "id": 5,
+        "title": "Buy souvenirs at Han Market",
+        "location": "Han Market",
+        "date": "2026-05-27",
+        "time": "15:00",
+        "category": "Shopping",
+        "priority": "Low",
+        "status": "Planned"
+      },
+      {
+        "id": 6,
+        "title": "Return flight to HCMC",
+        "location": "Da Nang Airport",
+        "date": "2026-05-28",
+        "time": "14:00",
+        "category": "Transport",
+        "priority": "High",
+        "status": "Planned"
+      },
+      {
+        "id": 7,
+        "title": "Visit Marble Mountains",
+        "location": "Ngu Hanh Son",
+        "date": "2026-05-10",
+        "time": "08:00",
+        "category": "Sightseeing",
+        "priority": "Medium",
+        "status": "Planned"
+      }
+    ],
+    "packingList": [
+      {
+        "id": 1,
+        "name": "Passport / ID card",
+        "category": "Documents",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Packed"
+      },
+      {
+        "id": 2,
+        "name": "Round-trip ticket (Hard copy)",
+        "category": "Documents",
+        "quantity": 2,
+        "requiredStatus": "Required",
+        "packedStatus": "Not Packed"
+      },
+      {
+        "id": 3,
+        "name": "3 short-sleeve T-shirts",
+        "category": "Clothes",
+        "quantity": 4,
+        "requiredStatus": "Required",
+        "packedStatus": "Packed"
+      },
+      {
+        "id": 4,
+        "name": "Sunscreen",
+        "category": "Personal",
+        "quantity": 1,
+        "requiredStatus": "Optional",
+        "packedStatus": "Not Packed"
+      },
+      {
+        "id": 5,
+        "name": "Fever & stomach meds",
+        "category": "Medicine",
+        "quantity": 2,
+        "requiredStatus": "Required",
+        "packedStatus": "Packed"
+      },
+      {
+        "id": 6,
+        "name": "Power bank & charging cable",
+        "category": "Electronics",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Not Packed"
+      },
+      {
+        "id": 7,
+        "name": "Goggles",
+        "category": "Personal",
+        "quantity": 1,
+        "requiredStatus": "Optional",
+        "packedStatus": "Packed"
+      }
+    ],
+    "budgetItems": [
+      {
+        "id": 1,
+        "name": "Two round-trip plane tickets",
+        "category": "Transport",
+        "estimatedCost": 4000000,
+        "actualCost": 4200000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 2,
+        "name": "Three nights at Hotel",
+        "category": "Accommodation",
+        "estimatedCost": 3600000,
+        "actualCost": 3600000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 3,
+        "name": "Ba Na Hills entrance fee",
+        "category": "Activity",
+        "estimatedCost": 1800000,
+        "actualCost": 0,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 4,
+        "name": "Seafood dinner",
+        "category": "Food",
+        "estimatedCost": 2500000,
+        "actualCost": 1200000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 5,
+        "name": "Souvenirs & gifts",
+        "category": "Shopping",
+        "estimatedCost": 1000000,
+        "actualCost": 0,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 6,
+        "name": "Airport Shuttle",
+        "category": "Transport",
+        "estimatedCost": 500000,
+        "actualCost": 500000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 7,
+        "name": "2-day motorbike rental",
+        "category": "Transport",
+        "estimatedCost": 200000,
+        "actualCost": 0,
+        "paymentStatus": "Unpaid"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "tripName": "New York Adventure",
+    "budget": 50000000,
+    "itinerary": [
+      {
+        "id": 1,
+        "title": "Flight to JFK",
+        "location": "Noi Bai Airport",
+        "date": "2026-06-01",
+        "time": "22:00",
+        "category": "Transport",
+        "priority": "High",
+        "status": "Planned"
+      },
+      {
+        "id": 2,
+        "title": "Statue of Liberty Tour",
+        "location": "Liberty Island",
+        "date": "2026-06-04",
+        "time": "10:00",
+        "category": "Sightseeing",
+        "priority": "High",
+        "status": "Planned"
+      },
+      {
+        "id": 3,
+        "title": "Times Square Visit",
+        "location": "Manhattan",
+        "date": "2026-06-04",
+        "time": "20:00",
+        "category": "Sightseeing",
+        "priority": "Medium",
+        "status": "Planned"
+      },
+      {
+        "id": 4,
+        "title": "Broadway Show",
+        "location": "Theater District",
+        "date": "2026-06-05",
+        "time": "19:00",
+        "category": "Other",
+        "priority": "High",
+        "status": "Planned"
+      },
+      {
+        "id": 5,
+        "title": "I ❤️ Rosie pop-up",
+        "location": "Barnes & Noble",
+        "date": "2026-06-06",
+        "time": "09:00",
+        "category": "Sightseeing",
+        "priority": "Low",
+        "status": "Planned"
+      },
+      {
+        "id": 6,
+        "title": "Shopping at Saint Laurent store",
+        "location": "Herald Square",
+        "date": "2026-06-06",
+        "time": "14:00",
+        "category": "Shopping",
+        "priority": "Medium",
+        "status": "Planned"
+      },
+      {
+        "id": 7,
+        "title": "Return Flight",
+        "location": "JFK Airport",
+        "date": "2026-06-07",
+        "time": "21:00",
+        "category": "Transport",
+        "priority": "High",
+        "status": "Planned"
+      }
+    ],
+    "packingList": [
+      {
+        "id": 1,
+        "name": "Passport & Visa",
+        "category": "Documents",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Packed"
+      },
+      {
+        "id": 2,
+        "name": "Winter Jacket",
+        "category": "Clothes",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Not Packed"
+      },
+      {
+        "id": 3,
+        "name": "Camera",
+        "category": "Electronics",
+        "quantity": 1,
+        "requiredStatus": "Optional",
+        "packedStatus": "Packed"
+      },
+      {
+        "id": 4,
+        "name": "Universal Adapter",
+        "category": "Electronics",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Not Packed"
+      },
+      {
+        "id": 5,
+        "name": "Travel Insurance",
+        "category": "Documents",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Packed"
+      },
+      {
+        "id": 6,
+        "name": "Comfortable Shoes",
+        "category": "Clothes",
+        "quantity": 2,
+        "requiredStatus": "Required",
+        "packedStatus": "Not Packed"
+      },
+      {
+        "id": 7,
+        "name": "Umbrella",
+        "category": "Personal",
+        "quantity": 1,
+        "requiredStatus": "Optional",
+        "packedStatus": "Packed"
+      }
+    ],
+    "budgetItems": [
+      {
+        "id": 1,
+        "name": "International Flights",
+        "category": "Transport",
+        "estimatedCost": 25000000,
+        "actualCost": 26000000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 2,
+        "name": "Hotel 6 nights",
+        "category": "Accommodation",
+        "estimatedCost": 15000000,
+        "actualCost": 15000000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 3,
+        "name": "Statue of Liberty Ticket",
+        "category": "Activity",
+        "estimatedCost": 2000000,
+        "actualCost": 2000000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 4,
+        "name": "Broadway Show",
+        "category": "Activity",
+        "estimatedCost": 3000000,
+        "actualCost": 3000000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 5,
+        "name": "Little Saigon Food",
+        "category": "Food",
+        "estimatedCost": 5000000,
+        "actualCost": 4000000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 6,
+        "name": "Shopping",
+        "category": "Shopping",
+        "estimatedCost": 2000000,
+        "actualCost": 1000000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 7,
+        "name": "Local Transport (Subway)",
+        "category": "Transport",
+        "estimatedCost": 1500000,
+        "actualCost": 1500000,
+        "paymentStatus": "Paid"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "tripName": "Japan Cherry Blossom",
+    "budget": 30000000,
+    "itinerary": [
+      {
+        "id": 1,
+        "title": "Flight to Tokyo",
+        "location": "Narita Airport",
+        "date": "2026-06-09",
+        "time": "09:00",
+        "category": "Transport",
+        "priority": "High",
+        "status": "Planned"
+      },
+      {
+        "id": 2,
+        "title": "Shinjuku Garden Picnic",
+        "location": "Shinjuku, Tokyo",
+        "date": "2026-06-10",
+        "time": "13:00",
+        "category": "Food",
+        "priority": "Medium",
+        "status": "Planned"
+      },
+      {
+        "id": 3,
+        "title": "Mount Fuji Day Trip",
+        "location": "Fuji Five Lakes",
+        "date": "2026-06-11",
+        "time": "07:00",
+        "category": "Sightseeing",
+        "priority": "High",
+        "status": "Planned"
+      },
+      {
+        "id": 4,
+        "title": "Visit Kinkaku-ji",
+        "location": "Kyoto",
+        "date": "2026-06-11",
+        "time": "10:00",
+        "category": "Sightseeing",
+        "priority": "High",
+        "status": "Planned"
+      },
+      {
+        "id": 5,
+        "title": "Sushi Making Class",
+        "location": "Osaka",
+        "date": "2026-06-11",
+        "time": "15:00",
+        "category": "Food",
+        "priority": "Medium",
+        "status": "Planned"
+      },
+      {
+        "id": 6,
+        "title": "Shibuya Crossing",
+        "location": "Shibuya, Tokyo",
+        "date": "2026-04-12",
+        "time": "19:00",
+        "category": "Sightseeing",
+        "priority": "Low",
+        "status": "Planned"
+      },
+      {
+        "id": 7,
+        "title": "Return Flight",
+        "location": "Narita Airport",
+        "date": "2026-06-13",
+        "time": "16:00",
+        "category": "Transport",
+        "priority": "High",
+        "status": "Planned"
+      }
+    ],
+    "packingList": [
+      {
+        "id": 1,
+        "name": "Pocket Wi-Fi",
+        "category": "Electronics",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Packed"
+      },
+      {
+        "id": 2,
+        "name": "Comfortable Walking Shoes",
+        "category": "Clothes",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Not Packed"
+      },
+      {
+        "id": 3,
+        "name": "Portable Charger",
+        "category": "Electronics",
+        "quantity": 1,
+        "requiredStatus": "Optional",
+        "packedStatus": "Packed"
+      },
+      {
+        "id": 4,
+        "name": "Face Mask",
+        "category": "Personal",
+        "quantity": 5,
+        "requiredStatus": "Required",
+        "packedStatus": "Not Packed"
+      },
+      {
+        "id": 5,
+        "name": "Japan Rail Pass",
+        "category": "Documents",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Packed"
+      },
+      {
+        "id": 6,
+        "name": "Light Jacket",
+        "category": "Clothes",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Not Packed"
+      },
+      {
+        "id": 7,
+        "name": "Travel Journal",
+        "category": "Personal",
+        "quantity": 1,
+        "requiredStatus": "Optional",
+        "packedStatus": "Packed"
+      }
+    ],
+    "budgetItems": [
+      {
+        "id": 1,
+        "name": "Flights (round trip)",
+        "category": "Transport",
+        "estimatedCost": 12000000,
+        "actualCost": 12500000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 2,
+        "name": "Accommodation (8 nights)",
+        "category": "Accommodation",
+        "estimatedCost": 10000000,
+        "actualCost": 10000000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 3,
+        "name": "Japan Rail Pass",
+        "category": "Transport",
+        "estimatedCost": 4000000,
+        "actualCost": 4000000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 4,
+        "name": "Mount Fuji Tour",
+        "category": "Activity",
+        "estimatedCost": 2500000,
+        "actualCost": 2500000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 5,
+        "name": "Food & Snacks",
+        "category": "Food",
+        "estimatedCost": 6000000,
+        "actualCost": 5000000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 6,
+        "name": "Souvenirs",
+        "category": "Shopping",
+        "estimatedCost": 2000000,
+        "actualCost": 1000000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 7,
+        "name": "Local Transportation",
+        "category": "Transport",
+        "estimatedCost": 1500000,
+        "actualCost": 1500000,
+        "paymentStatus": "Paid"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "tripName": "Ho Chi Minh City Exploration",
+    "budget": 7000000,
+    "itinerary": [
+      {
+        "id": 1,
+        "title": "Metro Line 1 Experience",
+        "location": "Ben Thanh - Suoi Tien",
+        "date": "2026-07-10",
+        "time": "09:00",
+        "category": "Transport",
+        "priority": "High",
+        "status": "Planned"
+      },
+      {
+        "id": 2,
+        "title": "Waterbus to District 2",
+        "location": "Bach Dang Pier",
+        "date": "2026-07-10",
+        "time": "15:00",
+        "category": "Transport",
+        "priority": "Medium",
+        "status": "Planned"
+      },
+      {
+        "id": 3,
+        "title": "Notre Dame Cathedral",
+        "location": "District 1",
+        "date": "2026-07-11",
+        "time": "10:00",
+        "category": "Sightseeing",
+        "priority": "High",
+        "status": "Planned"
+      },
+      {
+        "id": 4,
+        "title": "Pho Breakfast in Landmark 81",
+        "location": "Binh Thanh District",
+        "date": "2026-07-12",
+        "time": "07:00",
+        "category": "Food",
+        "priority": "Low",
+        "status": "Planned"
+      },
+      {
+        "id": 5,
+        "title": "War Remnants Museum",
+        "location": "District 3",
+        "date": "2026-07-12",
+        "time": "13:00",
+        "category": "Sightseeing",
+        "priority": "Medium",
+        "status": "Planned"
+      },
+      {
+        "id": 6,
+        "title": "Ben Thanh Market Shopping",
+        "location": "District 1",
+        "date": "2026-07-12",
+        "time": "17:00",
+        "category": "Shopping",
+        "priority": "Low",
+        "status": "Planned"
+      },
+      {
+        "id": 7,
+        "title": "Hotel Check-out",
+        "location": "District 2",
+        "date": "2026-07-13",
+        "time": "11:00",
+        "category": "Hotel",
+        "priority": "High",
+        "status": "Planned"
+      }
+    ],
+    "packingList": [
+      {
+        "id": 1,
+        "name": "Light Backpack",
+        "category": "Personal",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Packed"
+      },
+      {
+        "id": 2,
+        "name": "Sun Hat",
+        "category": "Clothes",
+        "quantity": 1,
+        "requiredStatus": "Optional",
+        "packedStatus": "Not Packed"
+      },
+      {
+        "id": 3,
+        "name": "Reusable Water Bottle",
+        "category": "Personal",
+        "quantity": 1,
+        "requiredStatus": "Optional",
+        "packedStatus": "Packed"
+      },
+      {
+        "id": 4,
+        "name": "Mosquito Repellent",
+        "category": "Medicine",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Not Packed"
+      },
+      {
+        "id": 5,
+        "name": "Map / Guidebook",
+        "category": "Documents",
+        "quantity": 1,
+        "requiredStatus": "Optional",
+        "packedStatus": "Packed"
+      },
+      {
+        "id": 6,
+        "name": "Umbrella",
+        "category": "Personal",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Not Packed"
+      },
+      {
+        "id": 7,
+        "name": "Portable Handheld Fan",
+        "category": "Electronics",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Packed"
+      }
+    ],
+    "budgetItems": [
+      {
+        "id": 1,
+        "name": "Hotel 3 nights",
+        "category": "Accommodation",
+        "estimatedCost": 3000000,
+        "actualCost": 3000000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 2,
+        "name": "Metro & Waterbus Tickets",
+        "category": "Transport",
+        "estimatedCost": 200000,
+        "actualCost": 150000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 3,
+        "name": "Food (Pho, Coffee...)",
+        "category": "Food",
+        "estimatedCost": 1500000,
+        "actualCost": 1700000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 4,
+        "name": "Museum Entrance Fee",
+        "category": "Activity",
+        "estimatedCost": 200000,
+        "actualCost": 200000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 5,
+        "name": "Grab Rides",
+        "category": "Transport",
+        "estimatedCost": 500000,
+        "actualCost": 400000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 6,
+        "name": "Souvenirs",
+        "category": "Shopping",
+        "estimatedCost": 500000,
+        "actualCost": 300000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 7,
+        "name": "SIM Card Data",
+        "category": "Other",
+        "estimatedCost": 200000,
+        "actualCost": 200000,
+        "paymentStatus": "Paid"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "tripName": "Paris Getaway",
+    "budget": 40000000,
+    "itinerary": [
+      {
+        "id": 1,
+        "title": "Flight to CDG",
+        "location": "Charles de Gaulle",
+        "date": "2026-09-10",
+        "time": "08:00",
+        "category": "Transport",
+        "priority": "High",
+        "status": "Planned"
+      },
+      {
+        "id": 2,
+        "title": "Eiffel Tower Visit",
+        "location": "Champ de Mars",
+        "date": "2026-09-11",
+        "time": "14:00",
+        "category": "Sightseeing",
+        "priority": "High",
+        "status": "Planned"
+      },
+      {
+        "id": 3,
+        "title": "Louvre Museum",
+        "location": "Rue de Rivoli",
+        "date": "2025-09-11",
+        "time": "10:00",
+        "category": "Sightseeing",
+        "priority": "High",
+        "status": "Planned"
+      },
+      {
+        "id": 4,
+        "title": "Seine River Cruise",
+        "location": "Pont Neuf",
+        "date": "2026-09-11",
+        "time": "18:00",
+        "category": "Sightseeing",
+        "priority": "Medium",
+        "status": "Planned"
+      },
+      {
+        "id": 5,
+        "title": "Macaron Tasting",
+        "location": "Saint-Germain",
+        "date": "2026-09-12",
+        "time": "11:00",
+        "category": "Food",
+        "priority": "Low",
+        "status": "Planned"
+      },
+      {
+        "id": 6,
+        "title": "Shopping at Champs Elysees",
+        "location": "Champs-Elysées",
+        "date": "2026-09-12",
+        "time": "15:00",
+        "category": "Shopping",
+        "priority": "Medium",
+        "status": "Planned"
+      },
+      {
+        "id": 7,
+        "title": "Return Flight",
+        "location": "CDG Airport",
+        "date": "2026-09-13",
+        "time": "12:00",
+        "category": "Transport",
+        "priority": "High",
+        "status": "Planned"
+      }
+    ],
+    "packingList": [
+      {
+        "id": 1,
+        "name": "Passport",
+        "category": "Documents",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Packed"
+      },
+      {
+        "id": 2,
+        "name": "Fashionable Outfit",
+        "category": "Clothes",
+        "quantity": 3,
+        "requiredStatus": "Required",
+        "packedStatus": "Not Packed"
+      },
+      {
+        "id": 3,
+        "name": "Selfie Stick",
+        "category": "Electronics",
+        "quantity": 1,
+        "requiredStatus": "Optional",
+        "packedStatus": "Packed"
+      },
+      {
+        "id": 4,
+        "name": "Earplugs for flight",
+        "category": "Personal",
+        "quantity": 1,
+        "requiredStatus": "Optional",
+        "packedStatus": "Not Packed"
+      },
+      {
+        "id": 5,
+        "name": "Credit Card",
+        "category": "Documents",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Packed"
+      },
+      {
+        "id": 6,
+        "name": "Travel Adapter",
+        "category": "Electronics",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Not Packed"
+      },
+      {
+        "id": 7,
+        "name": "Small Backpack",
+        "category": "Personal",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Packed"
+      }
+    ],
+    "budgetItems": [
+      {
+        "id": 1,
+        "name": "International Flights",
+        "category": "Transport",
+        "estimatedCost": 18000000,
+        "actualCost": 19000000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 2,
+        "name": "Hotel 4 nights",
+        "category": "Accommodation",
+        "estimatedCost": 12000000,
+        "actualCost": 11000000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 3,
+        "name": "Eiffel Tower Ticket",
+        "category": "Activity",
+        "estimatedCost": 2000000,
+        "actualCost": 2000000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 4,
+        "name": "Louvre Entry",
+        "category": "Activity",
+        "estimatedCost": 1500000,
+        "actualCost": 1500000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 5,
+        "name": "French Cuisine",
+        "category": "Food",
+        "estimatedCost": 4000000,
+        "actualCost": 3500000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 6,
+        "name": "Shopping",
+        "category": "Shopping",
+        "estimatedCost": 3000000,
+        "actualCost": 2000000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 7,
+        "name": "Local Transport",
+        "category": "Transport",
+        "estimatedCost": 1000000,
+        "actualCost": 1000000,
+        "paymentStatus": "Paid"
+      }
+    ]
+  }
+]
