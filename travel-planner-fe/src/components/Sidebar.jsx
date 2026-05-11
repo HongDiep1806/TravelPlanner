@@ -49,7 +49,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
   return (
     <aside
-      className={`fixed lg:sticky top-0 left-0 z-50 h-screen w-[260px] bg-white border-r border-gray-200 shadow-xl lg:shadow-none flex flex-col transition-transform duration-300 ${
+      className={`fixed lg:sticky top-0 left-0 z-50 h-screen w-[300px] bg-white border-r border-gray-200 shadow-xl lg:shadow-none flex flex-col transition-transform duration-300 ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       }`}
     >
