@@ -13,7 +13,10 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-export default function Sidebar() {
+export default function Sidebar({
+  sidebarOpen,
+  setSidebarOpen,
+}) {
   const { tripId } = useParams();
   const navigate = useNavigate();
 
@@ -63,15 +66,31 @@ export default function Sidebar() {
 
   return (
     <aside
-      className="
-        w-[270px]
+      className={`
+        fixed lg:sticky
+        top-0 left-0
+        z-50
+
+        h-screen
+        w-[260px]
+
         bg-white
         border-r
         border-gray-200
+        shadow-xl lg:shadow-none
+
         flex
         flex-col
-        shadow-sm
-      "
+
+        transition-transform
+        duration-300
+
+        ${
+          sidebarOpen
+            ? "translate-x-0"
+            : "-translate-x-full lg:translate-x-0"
+        }
+      `}
     >
       {/* ================= HEADER ================= */}
       <div
