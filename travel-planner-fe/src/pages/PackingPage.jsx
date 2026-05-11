@@ -97,7 +97,7 @@ function FilterOverlay({ filters, onChange, onApply, onClear, onClose }) {
         </div>
 
         <div className="overflow-y-auto flex-1 px-5 py-4 space-y-5">
-
+          
           {/* Category */}
           <div>
             <p className="text-sm font-bold text-gray-700 mb-2.5">Category</p>
@@ -146,8 +146,8 @@ function FilterOverlay({ filters, onChange, onApply, onClear, onClose }) {
             </div>
           </div>
 
-          {/* Required */}
-          <div>
+           {/* Required */}
+           <div>
             <p className="text-sm font-bold text-gray-700 mb-2.5">Priority</p>
             <div className="flex flex-col gap-1.5">
               {[
@@ -533,10 +533,12 @@ export default function PackingPage() {
       </div>
 
       {/* ── PROGRESS ── */}
+      {/* FIX 1: Stack vertically on mobile so text is always left-aligned and never wraps awkwardly */}
       <div className="bg-gray-50 rounded-2xl px-6 py-5 mb-8 border border-gray-100">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 gap-1">
           <span className="text-base font-bold text-gray-700">Packing Progress</span>
-          <span className="text-base text-gray-500">
+          {/* On mobile: left-aligned below the label */}
+          <span className="text-sm sm:text-base text-gray-500">
             <span className="font-bold text-green-600">{packedCount}</span>
             {" / "}{total} items packed
             <span className="ml-1.5 text-gray-400">({pct}%)</span>
@@ -564,21 +566,23 @@ export default function PackingPage() {
                 style={{ borderColor: "oklch(93% 0.03 274)" }}
               >
                 {/* Category header */}
+                {/* FIX 2: Badge uses whitespace-nowrap so "2/3 packed" never line-breaks */}
                 <div
-                  className="flex items-center justify-between px-5 py-3.5"
+                  className="flex items-center justify-between px-5 py-3.5 gap-2"
                   style={{ backgroundColor: "oklch(96% 0.025 274)" }}
                 >
-                  <div className="flex items-center gap-2.5">
-                    <span style={{ color: INDIGO }}>{CATEGORY_ICON[category]}</span>
-                    <span className="text-base font-bold text-gray-800">{category}</span>
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="flex-shrink-0" style={{ color: INDIGO }}>{CATEGORY_ICON[category]}</span>
+                    <span className="text-base font-bold text-gray-800 truncate">{category}</span>
                     <span
-                      className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                      className="text-xs font-semibold px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap"
                       style={{ backgroundColor: "oklch(87% 0.065 274.039)", color: "oklch(45.7% 0.24 277.023)" }}
                     >
                       {packedInCat}/{catItems.length} packed
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  {/* Mini progress bar: desktop only */}
+                  <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
                     <div className="w-24 bg-gray-200 rounded-full h-1.5 overflow-hidden">
                       <div
                         className="h-1.5 rounded-full bg-green-500 transition-all duration-500"
@@ -592,47 +596,62 @@ export default function PackingPage() {
                 </div>
 
                 {/* Item rows */}
-                <div className="divide-y divide-gray-50 bg-white">
+                <div className="bg-white">
                   {catItems.map((item) => (
                     <div
                       key={item.id}
-                      className="group flex items-center gap-3 px-4 py-3.5 sm:px-5 sm:py-4 hover:bg-indigo-50/30 transition-colors"
+                      className="group border-t border-gray-50 first:border-t-0 hover:bg-indigo-50/30 transition-colors"
                     >
-                      <PackCheckbox checked={item.packed} onChange={() => toggle(item.id)} />
-
-                      {/* Name + mobile sub-info */}
-                      <div className="flex-1 min-w-0">
-                        <span className={`block text-sm sm:text-base font-medium transition-colors truncate
+                      {/* Desktop layout */}
+                      <div
+                        className="hidden sm:grid items-center gap-4 px-5 py-4"
+                        style={{ gridTemplateColumns: "1.25rem 1fr 3rem 7rem 7rem 5rem" }}
+                      >
+                        <PackCheckbox checked={item.packed} onChange={() => toggle(item.id)} />
+                        <span className={`text-base font-medium transition-colors truncate
                           ${item.packed ? "text-gray-400 line-through" : "text-gray-700"}`}>
                           {item.name}
                         </span>
-                        {/* Mobile only: qty + required inline */}
-                        <span className="sm:hidden text-xs text-gray-400 mt-0.5 block">
-                          Qty {item.qty} · {item.required}
+                        <span className="text-base text-gray-500 text-center">{item.qty}</span>
+                        <span className="text-base text-gray-400 text-center">{item.required}</span>
+                        <span className={`text-sm font-semibold px-3 py-1.5 rounded-lg text-center transition-colors
+                          ${item.packed ? "bg-green-100 text-green-600" : "bg-red-100 text-red-500"}`}>
+                          {item.packed ? "Packed" : "Not Packed"}
                         </span>
+                        <div className="flex items-center gap-1 justify-end opacity-30 group-hover:opacity-100 transition-opacity">
+                          <button onClick={() => setEditItem(item)} className="p-2 rounded-lg hover:bg-indigo-100 transition" title="Edit">
+                            <Pencil size={15} style={{ color: INDIGO }} />
+                          </button>
+                          <button onClick={() => remove(item.id)} className="p-2 rounded-lg hover:bg-red-100 transition" title="Delete">
+                            <Trash2 size={15} className="text-red-400" />
+                          </button>
+                        </div>
                       </div>
 
-                      {/* Qty — desktop only */}
-                      <span className="hidden sm:block w-8 text-center text-base text-gray-500">{item.qty}</span>
-
-                      {/* Required — desktop only */}
-                      <span className="hidden sm:block w-24 text-base text-gray-400 text-center">{item.required}</span>
-
-                      {/* Status badge */}
-                      <span className={`text-xs sm:text-sm font-semibold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors flex-shrink-0
-                        ${item.packed ? "bg-green-100 text-green-600" : "bg-red-100 text-red-500"}`}>
-                        <span className="hidden sm:inline">{item.packed ? "Packed" : "Not Packed"}</span>
-                        <span className="sm:hidden">{item.packed ? "✓" : "–"}</span>
-                      </span>
-
-                      {/* Edit & Delete */}
-                      <div className="flex items-center gap-0.5 sm:gap-1 opacity-30 group-hover:opacity-100 transition-opacity flex-shrink-0">
-                        <button onClick={() => setEditItem(item)} className="p-1.5 sm:p-2 rounded-lg hover:bg-indigo-100 transition" title="Edit">
-                          <Pencil size={14} style={{ color: INDIGO }} />
-                        </button>
-                        <button onClick={() => remove(item.id)} className="p-1.5 sm:p-2 rounded-lg hover:bg-red-100 transition" title="Delete">
-                          <Trash2 size={14} className="text-red-400" />
-                        </button>
+                      {/* Mobile layout */}
+                      <div className="sm:hidden flex items-center gap-3 px-4 py-3.5">
+                        <PackCheckbox checked={item.packed} onChange={() => toggle(item.id)} />
+                        <div className="flex-1 min-w-0">
+                          <span className={`block text-sm font-medium transition-colors truncate
+                            ${item.packed ? "text-gray-400 line-through" : "text-gray-700"}`}>
+                            {item.name}
+                          </span>
+                          <span className="text-xs text-gray-400 mt-0.5 block">
+                            Qty {item.qty} · {item.required}
+                          </span>
+                        </div>
+                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-lg flex-shrink-0
+                          ${item.packed ? "bg-green-100 text-green-600" : "bg-red-100 text-red-500"}`}>
+                          {item.packed ? "✓" : "–"}
+                        </span>
+                        <div className="flex items-center gap-0.5 opacity-30 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                          <button onClick={() => setEditItem(item)} className="p-1.5 rounded-lg hover:bg-indigo-100 transition">
+                            <Pencil size={14} style={{ color: INDIGO }} />
+                          </button>
+                          <button onClick={() => remove(item.id)} className="p-1.5 rounded-lg hover:bg-red-100 transition">
+                            <Trash2 size={14} className="text-red-400" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
