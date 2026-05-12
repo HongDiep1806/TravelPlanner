@@ -3,42 +3,37 @@ import { useNavigate } from "react-router-dom";
 export default function TripCard({ trip }) {
   const navigate = useNavigate();
 
+  const startDate = new Date(Math.min(...trip.itinerary.map(item => new Date(item.date))));
+  const endDate = new Date(Math.max(...trip.itinerary.map(item => new Date(item.date))));
+
+  const today = new Date();
+  const diffTime = startDate - today;
+  const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const displayDaysLeft = daysLeft > 0 ? daysLeft : 0;
+
+  const formatDate = (date) => {
+    return date.toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
+  };
+
   return (
     <div
       onClick={() => navigate(`/trip/${trip.id}/dashboard`)}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer"
+      className="bg-white rounded-2xl shadow-sm cursor-pointer hover:shadow-md transition overflow-hidden"
     >
-      <img
-        src={trip.image}
-        alt={trip.title}
-        className="h-48 w-full object-cover"
-      />
+      {/* Hình cover */}
+      <img src={trip.image} alt={trip.tripName} className="h-48 w-full object-cover" />
 
-      <div className="p-5">
-        <h2 className="font-bold text-lg">
-          {trip.title}
-        </h2>
+      <div className="p-5 space-y-2">
+        {/* Tên trip */}
+        <h2 className="font-bold text-lg">{trip.tripName}</h2>
 
-        <p className="text-gray-500 text-sm mt-1">
-          {trip.date}
+        {/* StartDate – EndDate */}
+        <p className="text-gray-500 text-sm">
+          {formatDate(startDate)} – {formatDate(endDate)}
         </p>
 
-        <p className="text-sm mt-3 mb-2">
-          {trip.daysLeft} days left
-        </p>
-
-        <div className="w-full bg-gray-200 h-2 rounded-full">
-          <div
-            className="bg-green-500 h-2 rounded-full"
-            style={{
-              width: `${trip.progress}%`,
-            }}
-          />
-        </div>
-
-        <div className="text-right text-sm mt-2">
-          {trip.progress}%
-        </div>
+        {/* Days left */}
+        <p className="text-gray-500 text-sm">{displayDaysLeft} days left</p>
       </div>
     </div>
   );
