@@ -5,6 +5,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 
+// ─── Constants ───────────────────────────────────────────────────────────────
 const CATEGORIES = ["Clothes", "Documents", "Electronics", "Medicine", "Personal", "Other"];
 
 const CATEGORY_ICON = {
@@ -39,6 +40,7 @@ const INITIAL_ITEMS = [
 
 const INDIGO = "oklch(51.1% 0.262 276.966)";
 
+// ─── Filter Overlay ───────────────────────────────────────────────────────────
 function FilterOverlay({ filters, onChange, onApply, onClear, onClose }) {
   const ref = useRef(null);
 
@@ -64,15 +66,33 @@ function FilterOverlay({ filters, onChange, onApply, onClear, onClose }) {
     filters.qtyMin !== "" ||
     filters.qtyMax !== "";
 
+  // Horizontal pill button component for Status & Priority
+  const PillGroup = ({ options, value, onSelect }) => (
+    <div className="flex items-center bg-gray-100 rounded-full p-1 gap-0.5 w-full">
+      {options.map(({ value: v, label }) => (
+        <button
+          key={v}
+          onClick={() => onSelect(v)}
+          className={`flex-1 px-2 py-1.5 rounded-full text-sm font-medium transition-all text-center whitespace-nowrap
+            ${value === v
+              ? "bg-white text-indigo-600 font-semibold"
+              : "text-gray-500 hover:text-gray-700"
+            }`}
+          style={value === v ? { boxShadow: "0 1px 3px rgba(0,0,0,0.12)" } : {}}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+
   return (
     <>
-      {/* dim backdrop */}
       <div className="fixed inset-0 z-30 bg-black/10" onClick={onClose} />
 
-      {/* panel */}
       <div
         ref={ref}
-        className="fixed right-4 sm:right-6 z-40 bg-white rounded-2xl shadow-2xl border border-gray-100 w-[calc(100vw-2rem)] sm:w-72 flex flex-col"
+        className="fixed right-4 sm:right-6 z-40 bg-white rounded-2xl shadow-2xl border border-gray-100 w-[calc(100vw-2rem)] sm:w-80 flex flex-col"
         style={{ top: "50%", transform: "translateY(-50%)", maxHeight: "calc(100vh - 80px)" }}
       >
         {/* header */}
@@ -80,11 +100,7 @@ function FilterOverlay({ filters, onChange, onApply, onClear, onClose }) {
           <span className="text-base font-bold text-gray-800">Filters</span>
           <div className="flex items-center gap-3">
             {hasActive && (
-              <button
-                onClick={onClear}
-                className="text-sm font-semibold"
-                style={{ color: INDIGO }}
-              >
+              <button onClick={onClear} className="text-sm font-semibold" style={{ color: INDIGO }}>
                 Clear all
               </button>
             )}
@@ -95,26 +111,26 @@ function FilterOverlay({ filters, onChange, onApply, onClear, onClose }) {
         </div>
 
         <div className="overflow-y-auto flex-1 px-5 py-4 space-y-5">
-          
-          {/* Category */}
+
+          {/* Category — 2-column grid */}
           <div>
             <p className="text-sm font-bold text-gray-700 mb-2.5">Category</p>
-            <div className="space-y-1.5">
+            <div className="grid grid-cols-2 gap-2">
               {CATEGORIES.map((cat) => {
                 const active = filters.categories.includes(cat);
                 return (
                   <button
                     key={cat}
                     onClick={() => toggleCat(cat)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all
                       ${active ? "text-indigo-600 bg-indigo-50" : "text-gray-600 hover:bg-gray-50"}`}
                   >
-                    <span className={active ? "text-indigo-500" : "text-gray-400"}>
+                    <span className={`flex-shrink-0 ${active ? "text-indigo-500" : "text-gray-400"}`}>
                       {CATEGORY_ICON[cat]}
                     </span>
-                    {cat}
+                    <span className="truncate">{cat}</span>
                     {active && (
-                      <Check size={13} className="ml-auto text-indigo-500" strokeWidth={3} />
+                      <Check size={12} className="ml-auto flex-shrink-0 text-indigo-500" strokeWidth={3} />
                     )}
                   </button>
                 );
@@ -122,48 +138,32 @@ function FilterOverlay({ filters, onChange, onApply, onClear, onClose }) {
             </div>
           </div>
 
-          {/* Status */}
+          {/* Packed Status — horizontal pills */}
           <div>
             <p className="text-sm font-bold text-gray-700 mb-2.5">Packed Status</p>
-            <div className="flex flex-col gap-1.5">
-              {[
-                { value: "all",    label: "All" },
-                { value: "packed", label: "Packed" },
-                { value: "unpacked", label: "Not Packed" },
-              ].map(({ value, label }) => (
-                <button
-                  key={value}
-                  onClick={() => onChange({ ...filters, status: value })}
-                  className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all
-                    ${filters.status === value ? "bg-indigo-50 text-indigo-600" : "text-gray-600 hover:bg-gray-50"}`}
-                >
-                  {label}
-                  {filters.status === value && <Check size={13} strokeWidth={3} className="text-indigo-500" />}
-                </button>
-              ))}
-            </div>
+            <PillGroup
+              options={[
+                { value: "all",      label: "All"       },
+                { value: "packed",   label: "Packed"    },
+                { value: "unpacked", label: "Not Packed"},
+              ]}
+              value={filters.status}
+              onSelect={(v) => onChange({ ...filters, status: v })}
+            />
           </div>
 
-           {/* Required */}
-           <div>
+          {/* Priority — horizontal pills */}
+          <div>
             <p className="text-sm font-bold text-gray-700 mb-2.5">Priority</p>
-            <div className="flex flex-col gap-1.5">
-              {[
-                { value: "all",      label: "All" },
+            <PillGroup
+              options={[
+                { value: "all",      label: "All"      },
                 { value: "Required", label: "Required" },
                 { value: "Optional", label: "Optional" },
-              ].map(({ value, label }) => (
-                <button
-                  key={value}
-                  onClick={() => onChange({ ...filters, required: value })}
-                  className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all
-                    ${filters.required === value ? "bg-indigo-50 text-indigo-600" : "text-gray-600 hover:bg-gray-50"}`}
-                >
-                  {label}
-                  {filters.required === value && <Check size={13} strokeWidth={3} className="text-indigo-500" />}
-                </button>
-              ))}
-            </div>
+              ]}
+              value={filters.required}
+              onSelect={(v) => onChange({ ...filters, required: v })}
+            />
           </div>
 
           {/* Quantity range */}
@@ -212,6 +212,7 @@ function FilterOverlay({ filters, onChange, onApply, onClear, onClose }) {
   );
 }
 
+// ─── Modal ────────────────────────────────────────────────────────────────────
 function ItemModal({ initial, onClose, onSave }) {
   const [form, setForm] = useState(
     initial
@@ -310,6 +311,7 @@ function ItemModal({ initial, onClose, onSave }) {
   );
 }
 
+// ─── Checkbox ─────────────────────────────────────────────────────────────────
 function PackCheckbox({ checked, onChange }) {
   return (
     <button
@@ -323,6 +325,7 @@ function PackCheckbox({ checked, onChange }) {
   );
 }
 
+// ─── Default filter state ─────────────────────────────────────────────────────
 const DEFAULT_FILTERS = {
   categories: [],
   status: "all",
@@ -331,28 +334,43 @@ const DEFAULT_FILTERS = {
   qtyMax: "",
 };
 
+// ─── Main ─────────────────────────────────────────────────────────────────────
 export default function PackingPage() {
-  const [items, setItems]             = useState(INITIAL_ITEMS);
-  const [search, setSearch]           = useState("");
-  const [showModal, setShowModal]     = useState(false);
-  const [editItem, setEditItem]       = useState(null);
-  const [showFilter, setShowFilter]   = useState(false);
+  const [items, setItems]           = useState(INITIAL_ITEMS);
+  const [search, setSearch]         = useState("");
+  const [showModal, setShowModal]   = useState(false);
+  const [editItem, setEditItem]     = useState(null);
+  const [showFilter, setShowFilter] = useState(false);
 
-  // quick pill groups - independent filters
-  const [quickStatus,   setQuickStatus]   = useState("all"); // "all" | "packed" | "unpacked"
-  const [quickPriority, setQuickPriority] = useState("all"); // "all" | "required" | "optional"
-
-  // detailed filter state (applied when user clicks Apply)
+  // Quick pill groups — driven by appliedFilters for sync
   const [pendingFilters, setPendingFilters] = useState(DEFAULT_FILTERS);
   const [appliedFilters, setAppliedFilters] = useState(DEFAULT_FILTERS);
 
-  const handleApply = () => setAppliedFilters(pendingFilters);
+  // Quick pills read from appliedFilters (status & required)
+  const quickStatus   = appliedFilters.status;
+  const quickPriority = appliedFilters.required;
+
+  // Setting a quick pill immediately applies it
+  const setQuickStatus = (v) => {
+    const next = { ...appliedFilters, status: v };
+    setAppliedFilters(next);
+    setPendingFilters(next);
+  };
+  const setQuickPriority = (v) => {
+    const next = { ...appliedFilters, required: v };
+    setAppliedFilters(next);
+    setPendingFilters(next);
+  };
+
+  const handleApply = () => {
+    setAppliedFilters(pendingFilters);
+  };
+
   const handleClear = () => {
     setPendingFilters(DEFAULT_FILTERS);
     setAppliedFilters(DEFAULT_FILTERS);
   };
 
-  // count active advanced filters
   const activeFilterCount = useMemo(() => {
     let n = 0;
     if (appliedFilters.categories.length) n++;
@@ -362,25 +380,17 @@ export default function PackingPage() {
     return n;
   }, [appliedFilters]);
 
+  // ── Derived ──────────────────────────────────────────────────────────────────
   const filtered = useMemo(() => items.filter((i) => {
-    // quick pill groups
-    if (quickStatus   === "packed"   && !i.packed)               return false;
-    if (quickStatus   === "unpacked" &&  i.packed)               return false;
-    if (quickPriority === "required" && i.required !== "Required") return false;
-    if (quickPriority === "optional" && i.required !== "Optional") return false;
-
-    // advanced filters
     if (appliedFilters.categories.length && !appliedFilters.categories.includes(i.category)) return false;
     if (appliedFilters.status === "packed"   && !i.packed)  return false;
     if (appliedFilters.status === "unpacked" &&  i.packed)  return false;
     if (appliedFilters.required !== "all" && i.required !== appliedFilters.required) return false;
     if (appliedFilters.qtyMin !== "" && i.qty < Number(appliedFilters.qtyMin)) return false;
     if (appliedFilters.qtyMax !== "" && i.qty > Number(appliedFilters.qtyMax)) return false;
-
-    // search
     if (search && !i.name.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
-  }), [items, quickStatus, quickPriority, appliedFilters, search]);
+  }), [items, appliedFilters, search]);
 
   const grouped = useMemo(() => {
     const map = {};
@@ -395,6 +405,7 @@ export default function PackingPage() {
   const total       = items.length;
   const pct         = total ? Math.round((packedCount / total) * 100) : 0;
 
+  // ── Handlers ─────────────────────────────────────────────────────────────────
   const toggle = (id) => setItems((prev) => prev.map((i) => i.id === id ? { ...i, packed: !i.packed } : i));
   const remove = (id) => setItems((prev) => prev.filter((i) => i.id !== id));
   const add    = (form) => setItems((prev) => [...prev, { ...form, id: Date.now() }]);
@@ -410,10 +421,11 @@ export default function PackingPage() {
   ];
   const PRIORITY_PILLS = [
     { value: "all",      label: "All"      },
-    { value: "required", label: "Required" },
-    { value: "optional", label: "Optional" },
+    { value: "Required", label: "Required" },
+    { value: "Optional", label: "Optional" },
   ];
 
+  // ── Render ───────────────────────────────────────────────────────────────────
   return (
     <div className="bg-white rounded-3xl p-4 sm:p-8 min-h-full shadow-sm">
 
@@ -433,7 +445,6 @@ export default function PackingPage() {
             <span className="hidden sm:inline">Add Item</span>
           </button>
 
-          {/* Filter button */}
           <button
             onClick={() => {
               setPendingFilters(appliedFilters);
@@ -459,6 +470,7 @@ export default function PackingPage() {
         </div>
       </div>
 
+      {/* ── QUICK PILL GROUPS ── */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-8 mb-5">
         <div className="flex items-center gap-3 flex-wrap">
           {/* Status group */}
@@ -479,7 +491,6 @@ export default function PackingPage() {
             ))}
           </div>
 
-          {/* Divider — hidden on mobile */}
           <div className="hidden sm:block w-px h-6 bg-gray-200" />
 
           {/* Priority group */}
@@ -501,7 +512,7 @@ export default function PackingPage() {
           </div>
         </div>
 
-        {/* Search — full width on mobile, auto on desktop */}
+        {/* Search */}
         <div className="relative sm:ml-auto">
           <Search size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
           <input
@@ -553,7 +564,6 @@ export default function PackingPage() {
                 className="rounded-2xl border overflow-hidden shadow-sm"
                 style={{ borderColor: "oklch(93% 0.03 274)" }}
               >
-                {/* Category header */}
                 <div
                   className="flex items-center justify-between px-5 py-3.5 gap-2"
                   style={{ backgroundColor: "oklch(96% 0.025 274)" }}
@@ -581,7 +591,6 @@ export default function PackingPage() {
                   </div>
                 </div>
 
-                {/* Item rows */}
                 <div className="bg-white">
                   {catItems.map((item) => (
                     <div
