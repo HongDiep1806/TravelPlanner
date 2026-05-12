@@ -15,7 +15,6 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const navigate = useNavigate();
   const [trip, setTrip] = useState(null);
 
-  // Fetch trip từ API
   useEffect(() => {
     if (!tripId) return;
 
@@ -41,7 +40,6 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     { title: "Settings", icon: <Settings size={20} />, path: `/trip/${tripId}/settings` },
   ];
 
-  // Lấy date start-end từ itinerary
   const tripDate =
     trip?.itinerary?.length
       ? `${trip.itinerary[0].date} - ${trip.itinerary[trip.itinerary.length - 1].date}`
@@ -53,7 +51,6 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       }`}
     >
-      {/* ================= HEADER ================= */}
       <div className="h-[90px] border-b border-gray-100 flex items-center px-6">
         <div className="flex items-center gap-4">
           {/* Logo chữ đầu */}
@@ -69,7 +66,6 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         </div>
       </div>
 
-      {/* ================= MENU ================= */}
       <div className="flex-1 p-4 space-y-2">
         {menus.map((item, index) => (
           <NavLink
@@ -89,7 +85,6 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         ))}
       </div>
 
-      {/* ================= FOOTER ================= */}
       <div className="p-4 border-t border-gray-100">
         <button
           onClick={() => navigate("/")}
