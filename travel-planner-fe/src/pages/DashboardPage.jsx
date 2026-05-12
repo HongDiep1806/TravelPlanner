@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
-  const { tripId } = useParams(); // từ route /trip/:tripId
+  const { tripId } = useParams();
   const [tripData, setTripData] = useState(null);
 
   useEffect(() => {
