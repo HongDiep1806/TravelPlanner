@@ -6,7 +6,6 @@ import {
   Settings,
   ArrowLeft,
 } from "lucide-react";
-
 import { NavLink, useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
@@ -40,42 +39,45 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     { title: "Settings", icon: <Settings size={20} />, path: `/trip/${tripId}/settings` },
   ];
 
-  const tripDate =
-    trip?.itinerary?.length
-      ? `${trip.itinerary[0].date} - ${trip.itinerary[trip.itinerary.length - 1].date}`
-      : "...";
+  const tripDate = trip?.itinerary?.length
+    ? `${trip.itinerary[0].date} - ${trip.itinerary[trip.itinerary.length - 1].date}`
+    : "No dates set";
 
   return (
     <aside
-      className={`fixed lg:sticky top-0 left-0 z-50 h-screen w-[300px] bg-white border-r border-gray-200 shadow-xl lg:shadow-none flex flex-col transition-transform duration-300 ${
+      className={`fixed lg:sticky top-0 left-0 z-[50] h-screen w-[280px] bg-white border-r border-slate-100 shadow-2xl lg:shadow-none flex flex-col transition-transform duration-300 ease-in-out ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       }`}
     >
-      <div className="h-[90px] border-b border-gray-100 flex items-center px-6">
-        <div className="flex items-center gap-4">
-          {/* Logo chữ đầu */}
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white flex items-center justify-center font-bold text-lg shadow-lg">
+      {/* SIDEBAR HEADER: Info chuyến đi */}
+      <div className="h-16 lg:h-[90px] border-b border-slate-50 flex items-center px-6">
+        <div className="flex items-center gap-4 overflow-hidden">
+          <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl lg:rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-lg shadow-indigo-100 shadow-lg flex-shrink-0">
             {trip?.tripName?.[0] ?? "?"}
           </div>
-
-          {/* Trip Info */}
-          <div>
-            <h1 className="font-bold text-gray-800 text-[16px]">{trip?.tripName ?? "Loading..."}</h1>
-            <p className="text-sm text-gray-400 mt-1">{tripDate}</p>
+          <div className="min-w-0">
+            <h1 className="font-bold text-slate-800 text-sm lg:text-base truncate">
+              {trip?.tripName ?? "Loading..."}
+            </h1>
+            <p className="text-[10px] lg:text-xs text-slate-400 truncate uppercase font-bold tracking-wider">
+              {tripDate}
+            </p>
           </div>
         </div>
       </div>
 
-      <div className="flex-1 p-4 space-y-2">
+      {/* NAVIGATION LINKS */}
+      <div className="flex-1 p-4 space-y-1.5 overflow-y-auto custom-scrollbar">
         {menus.map((item, index) => (
           <NavLink
             key={index}
             to={item.path}
+            onClick={() => setSidebarOpen(false)} // Click xong tự đóng Sidebar trên mobile
             className={({ isActive }) =>
-              `w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 font-medium ${
+              `w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200 font-semibold text-sm lg:text-base ${
                 isActive
-                  ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg"
-                  : "text-gray-600 hover:bg-indigo-50 hover:text-indigo-600"
+                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-200"
+                  : "text-slate-500 hover:bg-slate-50 hover:text-indigo-600"
               }`
             }
           >
@@ -85,13 +87,14 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         ))}
       </div>
 
-      <div className="p-4 border-t border-gray-100">
+      {/* BOTTOM BUTTON: Thoát */}
+      <div className="p-4 border-t border-slate-50">
         <button
           onClick={() => navigate("/")}
-          className="w-full flex items-center justify-center gap-3 py-3 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium transition-all duration-300"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-bold transition-colors active:scale-95"
         >
-          <ArrowLeft size={18} />
-          <span>Back to My Trips</span>
+          <ArrowLeft size={16} />
+          <span>Exit Trip</span>
         </button>
       </div>
     </aside>
