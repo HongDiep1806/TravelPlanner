@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Outlet } from "react-router-dom";
 import {
   CalendarDays,
@@ -6,11 +7,40 @@ import {
 } from "lucide-react";
 
 import { useState } from "react";
+=======
+import { Outlet, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { TripSelectionProvider, useTripSelection } from "../context/TripSelectionContext";
+import Sidebar from "../components/Sidebar";
+
+function InnerLayout() {
+  const { tripId } = useParams();
+  const { setSelectedTripId } = useTripSelection();
+
+  useEffect(() => {
+    if (tripId) setSelectedTripId(tripId);
+  }, [tripId]);
+
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  return (
+    <div className="flex min-h-screen">
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <div className="flex-1 flex flex-col">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+}
+>>>>>>> origin/dev
 
 export default function TripSelectionLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen bg-[#f7f7fb]">
       {/* OVERLAY */}
       {sidebarOpen && (
@@ -203,5 +233,10 @@ export default function TripSelectionLayout() {
         </div>
       </div>
     </div>
+=======
+    <TripSelectionProvider>
+      <InnerLayout />
+    </TripSelectionProvider>
+>>>>>>> origin/dev
   );
 }

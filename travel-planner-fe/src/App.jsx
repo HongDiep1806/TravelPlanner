@@ -1,11 +1,7 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import TripSelectionLayout from "./layouts/TripSelectionLayout";
 import MainLayout from "./layouts/MainLayout";
+import TripSelectionLayout from "./layouts/TripSelectionLayout";
 
 import MyTripsPage from "./pages/MyTripsPage";
 import DashboardPage from "./pages/DashboardPage";
@@ -17,38 +13,19 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-
-        {/* TRIP SELECTION */}
-        <Route element={<TripSelectionLayout />}>
-          <Route path="/" element={<MyTripsPage />} />
+        {/* MainLayout cho MyTripsPage */}
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<MyTripsPage />} />
         </Route>
 
-        {/* MAIN LAYOUT */}
-        <Route
-          path="/trip/:tripId"
-          element={<MainLayout />}
-        >
-          <Route
-            path="dashboard"
-            element={<DashboardPage />}
-          />
-
-          <Route
-            path="itinerary"
-            element={<ItineraryPage />}
-          />
-
-          <Route
-            path="packing"
-            element={<PackingPage />}
-          />
-
-          <Route
-            path="budget"
-            element={<BudgetPage />}
-          />
+        {/* TripSelectionLayout cho trip đã chọn */}
+        <Route path="/trip/:tripId/*" element={<TripSelectionLayout />}>
+          <Route index element={<DashboardPage />} />
+          <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="itinerary" element={<ItineraryPage />} />
+          <Route path="packing" element={<PackingPage />} />
+          <Route path="budget" element={<BudgetPage />} />
         </Route>
-
       </Routes>
     </BrowserRouter>
   );

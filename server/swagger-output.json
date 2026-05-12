@@ -10,6 +10,7 @@
   "schemes": [
     "http"
   ],
+<<<<<<< HEAD
   "paths": {
     "/itinerary/{tripId}": {
       "get": {
@@ -28,10 +29,36 @@
           },
           "404": {
             "description": "Not Found"
+=======
+  "tags": [
+    {
+      "name": "Trips",
+      "description": "Manage trips"
+    },
+    {
+      "name": "Itinerary",
+      "description": "Manage travel activities for a trip"
+    },
+    {
+      "name": "Packing List",
+      "description": "Manage packing items for a trip"
+    }
+  ],
+  "paths": {
+    "/trips": {
+      "get": {
+        "tags": ["Trips"],
+        "summary": "Get all trips",
+        "description": "Returns the list of all trips.",
+        "responses": {
+          "200": {
+            "description": "List of trips"
+>>>>>>> origin/dev
           }
         }
       },
       "post": {
+<<<<<<< HEAD
         "description": "",
         "parameters": [
           {
@@ -66,6 +93,27 @@
                 },
                 "status": {
                   "example": "any"
+=======
+        "tags": ["Trips"],
+        "summary": "Create a new trip",
+        "description": "Creates a new trip with an empty itinerary, packing list, and budget.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["tripName", "budget"],
+              "properties": {
+                "tripName": {
+                  "type": "string",
+                  "example": "Da Nang Family Trip"
+                },
+                "budget": {
+                  "type": "number",
+                  "example": 12000000
+>>>>>>> origin/dev
                 }
               }
             }
@@ -73,6 +121,7 @@
         ],
         "responses": {
           "201": {
+<<<<<<< HEAD
             "description": "Created"
           },
           "400": {
@@ -80,18 +129,33 @@
           },
           "404": {
             "description": "Not Found"
+=======
+            "description": "Trip created successfully"
+          },
+          "400": {
+            "description": "Missing required fields: tripName and budget"
+>>>>>>> origin/dev
           }
         }
       }
     },
+<<<<<<< HEAD
     "/itinerary/{tripId}/{id}": {
       "get": {
         "description": "",
+=======
+    "/trips/{tripId}": {
+      "get": {
+        "tags": ["Trips"],
+        "summary": "Get a specific trip",
+        "description": "Returns a single trip by its ID.",
+>>>>>>> origin/dev
         "parameters": [
           {
             "name": "tripId",
             "in": "path",
             "required": true,
+<<<<<<< HEAD
             "type": "string"
           },
           {
@@ -99,24 +163,42 @@
             "in": "path",
             "required": true,
             "type": "string"
+=======
+            "type": "string",
+            "description": "ID of the trip"
+>>>>>>> origin/dev
           }
         ],
         "responses": {
           "200": {
+<<<<<<< HEAD
             "description": "OK"
           },
           "404": {
             "description": "Not Found"
+=======
+            "description": "Trip found"
+          },
+          "404": {
+            "description": "Trip not found"
+>>>>>>> origin/dev
           }
         }
       },
       "put": {
+<<<<<<< HEAD
         "description": "",
+=======
+        "tags": ["Trips"],
+        "summary": "Update a trip",
+        "description": "Updates the name and budget of an existing trip.",
+>>>>>>> origin/dev
         "parameters": [
           {
             "name": "tripId",
             "in": "path",
             "required": true,
+<<<<<<< HEAD
             "type": "string"
           },
           {
@@ -124,10 +206,15 @@
             "in": "path",
             "required": true,
             "type": "string"
+=======
+            "type": "string",
+            "description": "ID of the trip"
+>>>>>>> origin/dev
           },
           {
             "name": "body",
             "in": "body",
+<<<<<<< HEAD
             "schema": {
               "type": "object",
               "properties": {
@@ -136,6 +223,20 @@
                 },
                 "updateData": {
                   "example": "any"
+=======
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["tripName", "budget"],
+              "properties": {
+                "tripName": {
+                  "type": "string",
+                  "example": "Da Nang Family Trip"
+                },
+                "budget": {
+                  "type": "number",
+                  "example": 15000000
+>>>>>>> origin/dev
                 }
               }
             }
@@ -143,6 +244,7 @@
         ],
         "responses": {
           "200": {
+<<<<<<< HEAD
             "description": "OK"
           },
           "400": {
@@ -150,34 +252,499 @@
           },
           "404": {
             "description": "Not Found"
+=======
+            "description": "Trip updated successfully"
+          },
+          "400": {
+            "description": "Missing required fields: tripName and budget"
+          },
+          "404": {
+            "description": "Trip not found"
+>>>>>>> origin/dev
           }
         }
       },
       "delete": {
+<<<<<<< HEAD
         "description": "",
+=======
+        "tags": ["Trips"],
+        "summary": "Delete a trip",
+        "description": "Removes a trip and all its associated data.",
+>>>>>>> origin/dev
         "parameters": [
           {
             "name": "tripId",
             "in": "path",
             "required": true,
+<<<<<<< HEAD
             "type": "string"
+=======
+            "type": "string",
+            "description": "ID of the trip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trip deleted successfully"
+          },
+          "404": {
+            "description": "Trip not found"
+          }
+        }
+      }
+    },
+    "/itinerary/{tripId}": {
+      "get": {
+        "tags": ["Itinerary"],
+        "summary": "Get all itinerary items for a trip",
+        "description": "Returns every activity in the itinerary of the specified trip.",
+        "parameters": [
+          {
+            "name": "tripId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the trip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of itinerary items"
+          },
+          "404": {
+            "description": "Trip not found"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Itinerary"],
+        "summary": "Add a new itinerary item to a trip",
+        "description": "Creates a new activity and appends it to the trip's itinerary.",
+        "parameters": [
+          {
+            "name": "tripId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the trip"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["title", "location", "date", "time", "category", "priority", "status"],
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "example": "Flight to Da Nang"
+                },
+                "location": {
+                  "type": "string",
+                  "example": "Tan Son Nhat Airport"
+                },
+                "date": {
+                  "type": "string",
+                  "example": "2026-06-10"
+                },
+                "time": {
+                  "type": "string",
+                  "example": "08:00"
+                },
+                "category": {
+                  "type": "string",
+                  "enum": ["Transport", "Food", "Sightseeing", "Shopping", "Hotel", "Other"],
+                  "example": "Transport"
+                },
+                "priority": {
+                  "type": "string",
+                  "enum": ["Low", "Medium", "High"],
+                  "example": "High"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["Planned", "In Progress", "Done"],
+                  "example": "Planned"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Itinerary item created successfully"
+          },
+          "400": {
+            "description": "Missing or empty required fields"
+          },
+          "404": {
+            "description": "Trip not found"
+          }
+        }
+      }
+    },
+    "/itinerary/{tripId}/{id}": {
+      "get": {
+        "tags": ["Itinerary"],
+        "summary": "Get a specific itinerary item",
+        "description": "Returns a single itinerary item by its ID within the specified trip.",
+        "parameters": [
+          {
+            "name": "tripId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the trip"
+>>>>>>> origin/dev
           },
           {
             "name": "id",
             "in": "path",
             "required": true,
+<<<<<<< HEAD
             "type": "string"
+=======
+            "type": "string",
+            "description": "ID of the itinerary item"
+>>>>>>> origin/dev
           }
         ],
         "responses": {
           "200": {
+<<<<<<< HEAD
             "description": "OK"
           },
           "404": {
             "description": "Not Found"
+=======
+            "description": "Itinerary item found"
+          },
+          "404": {
+            "description": "Trip or itinerary item not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Itinerary"],
+        "summary": "Update an itinerary item",
+        "description": "Replaces all fields of an existing itinerary item. All fields are required.",
+        "parameters": [
+          {
+            "name": "tripId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the trip"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the itinerary item"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["title", "location", "date", "time", "category", "priority", "status"],
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "example": "Flight to Da Nang"
+                },
+                "location": {
+                  "type": "string",
+                  "example": "Tan Son Nhat Airport"
+                },
+                "date": {
+                  "type": "string",
+                  "example": "2026-06-10"
+                },
+                "time": {
+                  "type": "string",
+                  "example": "08:00"
+                },
+                "category": {
+                  "type": "string",
+                  "enum": ["Transport", "Food", "Sightseeing", "Shopping", "Hotel", "Other"],
+                  "example": "Transport"
+                },
+                "priority": {
+                  "type": "string",
+                  "enum": ["Low", "Medium", "High"],
+                  "example": "High"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["Planned", "In Progress", "Done"],
+                  "example": "In Progress"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated itinerary item"
+          },
+          "400": {
+            "description": "Missing or empty required fields, or empty body"
+          },
+          "404": {
+            "description": "Trip or itinerary item not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Itinerary"],
+        "summary": "Delete an itinerary item",
+        "description": "Removes an activity from the trip's itinerary.",
+        "parameters": [
+          {
+            "name": "tripId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the trip"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the itinerary item"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted itinerary item"
+          },
+          "404": {
+            "description": "Trip or itinerary item not found"
+          }
+        }
+      }
+    },
+    "/packing/{tripId}": {
+      "get": {
+        "tags": ["Packing List"],
+        "summary": "Get all packing items for a trip",
+        "description": "Returns the full packing list for the specified trip.",
+        "parameters": [
+          {
+            "name": "tripId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the trip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of packing items"
+          },
+          "404": {
+            "description": "Trip not found"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Packing List"],
+        "summary": "Add a new packing item to a trip",
+        "description": "Creates a new packing item and appends it to the trip's packing list.",
+        "parameters": [
+          {
+            "name": "tripId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the trip"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["name", "category", "quantity", "requiredStatus", "packedStatus"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Passport / ID card"
+                },
+                "category": {
+                  "type": "string",
+                  "enum": ["Clothes", "Documents", "Electronics", "Medicine", "Personal", "Other"],
+                  "example": "Documents"
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "example": 1
+                },
+                "requiredStatus": {
+                  "type": "string",
+                  "enum": ["Required", "Optional"],
+                  "example": "Required"
+                },
+                "packedStatus": {
+                  "type": "string",
+                  "enum": ["Packed", "Not Packed"],
+                  "example": "Not Packed"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Packing item created successfully"
+          },
+          "400": {
+            "description": "Missing/invalid fields or validation error"
+          },
+          "404": {
+            "description": "Trip not found"
+          }
+        }
+      }
+    },
+    "/packing/{tripId}/{id}": {
+      "get": {
+        "tags": ["Packing List"],
+        "summary": "Get a specific packing item",
+        "description": "Returns a single packing item by its ID within the specified trip.",
+        "parameters": [
+          {
+            "name": "tripId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the trip"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the packing item"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Packing item found"
+          },
+          "404": {
+            "description": "Trip or packing item not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Packing List"],
+        "summary": "Update a packing item",
+        "description": "Replaces all fields of an existing packing item. All fields are required.",
+        "parameters": [
+          {
+            "name": "tripId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the trip"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the packing item"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["name", "category", "quantity", "requiredStatus", "packedStatus"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Passport / ID card"
+                },
+                "category": {
+                  "type": "string",
+                  "enum": ["Clothes", "Documents", "Electronics", "Medicine", "Personal", "Other"],
+                  "example": "Documents"
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "example": 2
+                },
+                "requiredStatus": {
+                  "type": "string",
+                  "enum": ["Required", "Optional"],
+                  "example": "Required"
+                },
+                "packedStatus": {
+                  "type": "string",
+                  "enum": ["Packed", "Not Packed"],
+                  "example": "Packed"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated packing item"
+          },
+          "400": {
+            "description": "Missing/invalid fields or empty body"
+          },
+          "404": {
+            "description": "Trip or packing item not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Packing List"],
+        "summary": "Delete a packing item",
+        "description": "Removes a packing item from the trip's packing list.",
+        "parameters": [
+          {
+            "name": "tripId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the trip"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the packing item"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted packing item"
+          },
+          "404": {
+            "description": "Trip or packing item not found"
+>>>>>>> origin/dev
           }
         }
       }
     }
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/dev

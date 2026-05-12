@@ -163,6 +163,187 @@ app.delete("/itinerary/:tripId/:id", (req, res) => {
 
   res.json(deletedItem);
 });
+<<<<<<< HEAD
+=======
+// ================ Packing List API Endpoints ==================
+
+const VALID_PACKING_CATEGORIES = ["Clothes", "Documents", "Electronics", "Medicine", "Personal", "Other"];
+const VALID_REQUIRED_STATUS    = ["Required", "Optional"];
+const VALID_PACKED_STATUS      = ["Packed", "Not Packed"];
+
+// 1. Get all packing items for a specific trip
+app.get("/packing/:tripId", (req, res) => {
+  const data = readData();
+  const trip = data.find((t) => t.id === parseInt(req.params.tripId));
+
+  if (!trip) {
+    return res.status(404).json({ message: "Trip not found" });
+  }
+
+  res.json(trip.packingList);
+});
+
+// 2. Get a specific packing item by tripId and item ID
+app.get("/packing/:tripId/:id", (req, res) => {
+  const data = readData();
+  const trip = data.find((t) => t.id === parseInt(req.params.tripId));
+
+  if (!trip) {
+    return res.status(404).json({ message: "Trip not found" });
+  }
+
+  const item = trip.packingList.find((i) => i.id === parseInt(req.params.id));
+
+  if (!item) {
+    return res.status(404).json({ message: "Packing item not found" });
+  }
+
+  res.json(item);
+});
+
+// 3. Add a new packing item to a specific trip
+app.post("/packing/:tripId", (req, res) => {
+  const data = readData();
+  const tripId = parseInt(req.params.tripId);
+  const trip = data.find((t) => t.id === tripId);
+
+  if (!trip) {
+    return res.status(404).json({ message: "Trip not found" });
+  }
+
+  const { name, category, quantity, requiredStatus, packedStatus } = req.body;
+
+  const requiredFields = ["name", "category", "quantity", "requiredStatus", "packedStatus"];
+  const missingFields = requiredFields.filter(
+    (field) => !req.body[field] && req.body[field] !== 0 || req.body[field]?.toString().trim() === ""
+  );
+
+  if (missingFields.length > 0) {
+    return res.status(400).json({ message: "Missing or empty required fields", missingFields });
+  }
+
+  if (!VALID_PACKING_CATEGORIES.includes(category)) {
+    return res.status(400).json({
+      message: `Invalid category. Must be one of: ${VALID_PACKING_CATEGORIES.join(", ")}`,
+    });
+  }
+
+  const qty = Number(quantity);
+  if (!Number.isInteger(qty) || qty < 1) {
+    return res.status(400).json({ message: "Quantity must be a positive integer (>= 1)" });
+  }
+
+  if (!VALID_REQUIRED_STATUS.includes(requiredStatus)) {
+    return res.status(400).json({
+      message: `Invalid requiredStatus. Must be one of: ${VALID_REQUIRED_STATUS.join(", ")}`,
+    });
+  }
+
+  if (!VALID_PACKED_STATUS.includes(packedStatus)) {
+    return res.status(400).json({
+      message: `Invalid packedStatus. Must be one of: ${VALID_PACKED_STATUS.join(", ")}`,
+    });
+  }
+
+  const maxId = trip.packingList.reduce((max, item) => (item.id > max ? item.id : max), 0);
+  const newItem = {
+    id: maxId + 1,
+    name: name.trim(),
+    category,
+    quantity: qty,
+    requiredStatus,
+    packedStatus,
+  };
+
+  trip.packingList.push(newItem);
+  writeData(data);
+
+  res.status(201).json({ message: "Packing item created successfully", data: newItem });
+});
+
+// 4. Update an existing packing item by tripId and item ID
+// note: all fields (even unchanged ones) must be included in the request body
+app.put("/packing/:tripId/:id", (req, res) => {
+  const data = readData();
+  const tripId = parseInt(req.params.tripId);
+  const itemId = parseInt(req.params.id);
+
+  const trip = data.find((t) => t.id === tripId);
+  if (!trip) {
+    return res.status(404).json({ message: "Trip not found" });
+  }
+
+  const index = trip.packingList.findIndex((i) => i.id === itemId);
+  if (index === -1) {
+    return res.status(404).json({ message: "Packing item not found" });
+  }
+
+  if (Object.keys(req.body).length === 0) {
+    return res.status(400).json({ message: "Update data cannot be empty" });
+  }
+
+  const { name, category, quantity, requiredStatus, packedStatus } = req.body;
+
+  const requiredFields = ["name", "category", "quantity", "requiredStatus", "packedStatus"];
+  const missingFields = requiredFields.filter(
+    (field) => !req.body[field] && req.body[field] !== 0 || req.body[field]?.toString().trim() === ""
+  );
+
+  if (missingFields.length > 0) {
+    return res.status(400).json({ message: "Missing or empty required fields", missingFields });
+  }
+
+  if (!VALID_PACKING_CATEGORIES.includes(category)) {
+    return res.status(400).json({
+      message: `Invalid category. Must be one of: ${VALID_PACKING_CATEGORIES.join(", ")}`,
+    });
+  }
+
+  const qty = Number(quantity);
+  if (!Number.isInteger(qty) || qty < 1) {
+    return res.status(400).json({ message: "Quantity must be a positive integer (>= 1)" });
+  }
+
+  if (!VALID_REQUIRED_STATUS.includes(requiredStatus)) {
+    return res.status(400).json({
+      message: `Invalid requiredStatus. Must be one of: ${VALID_REQUIRED_STATUS.join(", ")}`,
+    });
+  }
+
+  if (!VALID_PACKED_STATUS.includes(packedStatus)) {
+    return res.status(400).json({
+      message: `Invalid packedStatus. Must be one of: ${VALID_PACKED_STATUS.join(", ")}`,
+    });
+  }
+
+  trip.packingList[index] = { id: itemId, name: name.trim(), category, quantity: qty, requiredStatus, packedStatus };
+  writeData(data);
+
+  res.json(trip.packingList[index]);
+});
+
+// 5. Delete a packing item by tripId and item ID
+app.delete("/packing/:tripId/:id", (req, res) => {
+  const data = readData();
+  const trip = data.find((t) => t.id === parseInt(req.params.tripId));
+
+  if (!trip) {
+    return res.status(404).json({ message: "Trip not found" });
+  }
+
+  const index = trip.packingList.findIndex((i) => i.id === parseInt(req.params.id));
+
+  if (index === -1) {
+    return res.status(404).json({ message: "Packing item not found" });
+  }
+
+  const deletedItem = trip.packingList.splice(index, 1);
+  writeData(data);
+
+  res.json(deletedItem);
+});
+
+>>>>>>> origin/dev
 // ============================Trip API Endpoints========================================
 // 1. Get all trips
 app.get("/trips", (req, res) => {

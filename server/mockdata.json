@@ -1,7 +1,11 @@
 [
   {
     "id": 1,
+<<<<<<< HEAD
     "tripName": "Summer Trip to Da Nang",
+=======
+    "tripName": "Trip to Da Nang",
+>>>>>>> origin/dev
     "budget": 12000000,
     "itinerary": [
       {
@@ -68,7 +72,11 @@
         "id": 7,
         "title": "Visit Marble Mountains",
         "location": "Ngu Hanh Son",
+<<<<<<< HEAD
         "date": "2026-05-10",
+=======
+        "date": "2026-05-29",
+>>>>>>> origin/dev
         "time": "08:00",
         "category": "Sightseeing",
         "priority": "Medium",
@@ -444,7 +452,11 @@
         "id": 6,
         "title": "Shibuya Crossing",
         "location": "Shibuya, Tokyo",
+<<<<<<< HEAD
         "date": "2026-04-12",
+=======
+        "date": "2026-06-12",
+>>>>>>> origin/dev
         "time": "19:00",
         "category": "Sightseeing",
         "priority": "Low",
@@ -800,7 +812,11 @@
         "id": 3,
         "title": "Louvre Museum",
         "location": "Rue de Rivoli",
+<<<<<<< HEAD
         "date": "2025-09-11",
+=======
+        "date": "2026-09-11",
+>>>>>>> origin/dev
         "time": "10:00",
         "category": "Sightseeing",
         "priority": "High",
