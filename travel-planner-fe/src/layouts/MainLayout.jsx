@@ -7,7 +7,25 @@ export default function MainLayout() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex font-sans">
-      {/* SIDEBAR */}
+      
+      {/* 1. MOBILE HEADER - Nút Menu nằm bên TRÁI */}
+      <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-100 px-4 flex items-center z-40">
+        <button 
+          onClick={() => setSidebarOpen(true)}
+          className="p-2 hover:bg-slate-50 rounded-xl text-slate-600 transition-colors mr-2"
+        >
+          <Menu size={24} />
+        </button>
+        
+        <div className="flex items-center gap-2">
+          <div className="bg-indigo-600 p-1.5 rounded-lg">
+            <Plus className="text-white w-4 h-4 rotate-45" />
+          </div>
+          <span className="font-bold text-slate-800 text-sm tracking-tight">Trip Planner Pro</span>
+        </div>
+      </header>
+
+      {/* 2. SIDEBAR */}
       <aside
         className={`
           fixed lg:sticky top-0 left-0 z-50
@@ -18,7 +36,7 @@ export default function MainLayout() {
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
         `}
       >
-        {/* LOGO */}
+        {/* LOGO TRONG SIDEBAR */}
         <div className="flex items-center gap-3 mb-12">
           <div className="bg-indigo-600 p-2 rounded-xl">
              <Plus className="text-white w-5 h-5 rotate-45" />
@@ -45,21 +63,24 @@ export default function MainLayout() {
           </div>
         </nav>
 
-        {/* USER FOOTER (Của Sidebar) */}
+        {/* USER FOOTER */}
         <div className="absolute bottom-8 left-8 flex items-center gap-3">
            <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs border-2 border-white shadow-sm">TR</div>
            <span className="text-sm font-semibold text-slate-500">Hello, Traveler!</span>
         </div>
       </aside>
 
-      {/* MOBILE OVERLAY */}
+      {/* 3. MOBILE OVERLAY - Chạm vào đây để đóng Sidebar */}
       {sidebarOpen && (
-        <div className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        <div 
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 lg:hidden" 
+          onClick={() => setSidebarOpen(false)} 
+        />
       )}
 
-      {/* RIGHT CONTENT */}
+      {/* 4. CONTENT */}
       <div className="flex-1 flex flex-col min-w-0">
-        <main className="flex-1 w-full p-8 lg:p-12 overflow-y-auto">
+        <main className="flex-1 w-full p-8 lg:p-12 overflow-y-auto bg-white">
           <Outlet />
         </main>
       </div>
