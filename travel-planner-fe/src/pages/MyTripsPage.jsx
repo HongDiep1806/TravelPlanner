@@ -1,35 +1,35 @@
 import { useState, useEffect } from "react";
 import TripCard from "../components/TripCard";
+import { Sun, Settings as SettingsIcon, Plus } from "lucide-react";
 
 export default function MyTripsPage() {
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchTrips = async () => {
       try {
         const res = await fetch("http://localhost:3000/trips");
-        if (!res.ok) throw new Error("Failed to fetch trips from API");
         const data = await res.json();
 
-        const funnyImages = [
-          "https://t3.ftcdn.net/jpg/07/80/95/16/360_F_780951672_cJzVeOxybkHkCkFDIOGUAlcq2ADIHVO7.jpg",
-          "https://img.magnific.com/premium-photo/travel-illustration-with-beige-background_123891-34607.jpg",
-          "https://m.media-amazon.com/images/I/61owA8oQRNL._AC_UF894,1000_QL80_.jpg",
-          "https://t3.ftcdn.net/jpg/05/09/27/46/360_F_509274674_SeWdmsza7cafrIzUZ924JvLuRRSCdxNS.jpg",
-          "https://elements-resized.envatousercontent.com/elements-video-cover-images/files/231957405/590_sun_4k.jpg?w=500&cf_fit=cover&q=85&format=auto&s=188fd3b4599eba29da88c393993bd0cfe4206ffb8c881dc9cd296726ce37f1d5",
+        const demoImages = [
+          "https://images.unsplash.com/photo-1528127269322-539801943592?w=500",
+          "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=500",
+          "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=500",
+          "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=500",
+          "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=500",
         ];
 
-        const tripsWithFunnyImages = data.map((trip, index) => ({
+        const tripsWithImages = data.map((trip, index) => ({
           ...trip,
-          image: funnyImages[index % funnyImages.length], // random theo index
+          image: trip.image || demoImages[index % demoImages.length],
+          daysLeft: trip.daysLeft || 0,
+          progress: trip.progress || 0,
         }));
 
-        setTrips(tripsWithFunnyImages);
-      } catch (err) {
-        console.error(err);
-        setError(err.message);
+        setTrips(tripsWithImages);
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu:", error);
       } finally {
         setLoading(false);
       }
@@ -38,47 +38,60 @@ export default function MyTripsPage() {
     fetchTrips();
   }, []);
 
-  if (loading) return <div className="p-8 text-center">Loading trips...</div>;
-  if (error) return <div className="p-8 text-center text-red-500">{error}</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64 text-slate-400 font-medium">
+        Loading your amazing journeys...
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-[#f5f7fb] p-8">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-10">
+    <div className="max-w-7xl mx-auto">
+      <div className="flex justify-between items-start mb-10">
         <div>
-          <h1 className="text-4xl font-bold text-gray-800">My Trips</h1>
-          <p className="text-gray-500 mt-2">
+          <h2 className="text-3xl font-extrabold text-slate-900 leading-tight">
+            My Trips
+          </h2>
+          <p className="text-slate-400 mt-1">
             All your amazing journeys in one place.
           </p>
         </div>
 
-        <button
-          className="
-            px-6 py-3 rounded-2xl
-            bg-gradient-to-r from-indigo-500 to-purple-500
-            text-white font-semibold
-            shadow-lg shadow-indigo-200
-            hover:scale-[1.02]
-            active:scale-[0.98]
-            transition-all duration-300
-          "
-        >
-          + Create Trip
-        </button>
+        <div className="flex items-center gap-4">
+          <div className="flex bg-white border border-slate-100 rounded-full p-1 shadow-sm">
+            <button className="p-2 text-slate-400 hover:text-indigo-600 transition-colors">
+              <Sun size={18} />
+            </button>
+            <button className="p-2 text-slate-400 hover:text-indigo-600 transition-colors">
+              <SettingsIcon size={18} />
+            </button>
+          </div>
+          <div className="w-10 h-10 rounded-full bg-slate-200 border-2 border-white shadow-sm flex items-center justify-center font-bold text-slate-500 text-xs">
+            TR
+          </div>
+        </div>
       </div>
 
-      {/* Trip Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         {trips.map((trip) => (
-          <TripCard
-            key={trip.id}
-            trip={{
-              title: trip.tripName,
-              budget: trip.budget,
-              image: trip.image,
-            }}
-          />
+          <TripCard key={trip.id} trip={trip} />
         ))}
+
+        <div className="border-2 border-dashed border-slate-200 rounded-[32px] flex flex-col justify-center items-center p-10 bg-white/50 hover:bg-white hover:border-indigo-300 transition-all cursor-pointer group min-h-[350px]">
+          <div className="bg-slate-50 group-hover:bg-indigo-50 p-4 rounded-full mb-4 transition-colors">
+            <Plus
+              className="text-slate-300 group-hover:text-indigo-600"
+              size={30}
+            />
+          </div>
+          <span className="text-indigo-600 font-bold text-lg">
+            + Create New Trip
+          </span>
+          <span className="text-sm text-slate-400 mt-2 text-center px-4">
+            Start planning your next adventure
+          </span>
+        </div>
       </div>
     </div>
   );
