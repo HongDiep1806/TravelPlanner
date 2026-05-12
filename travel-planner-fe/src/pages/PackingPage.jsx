@@ -5,6 +5,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 
+// ─── Constants ───────────────────────────────────────────────────────────────
 const CATEGORIES = ["Clothes", "Documents", "Electronics", "Medicine", "Personal", "Other"];
 
 const CATEGORY_ICON = {
@@ -39,6 +40,7 @@ const INITIAL_ITEMS = [
 
 const INDIGO = "oklch(51.1% 0.262 276.966)";
 
+// ─── Filter Overlay ───────────────────────────────────────────────────────────
 function FilterOverlay({ filters, onChange, onApply, onClear, onClose }) {
   const ref = useRef(null);
 
@@ -212,6 +214,7 @@ function FilterOverlay({ filters, onChange, onApply, onClear, onClose }) {
   );
 }
 
+// ─── Modal ────────────────────────────────────────────────────────────────────
 function ItemModal({ initial, onClose, onSave }) {
   const [form, setForm] = useState(
     initial
@@ -310,6 +313,7 @@ function ItemModal({ initial, onClose, onSave }) {
   );
 }
 
+// ─── Checkbox ─────────────────────────────────────────────────────────────────
 function PackCheckbox({ checked, onChange }) {
   return (
     <button
@@ -323,6 +327,7 @@ function PackCheckbox({ checked, onChange }) {
   );
 }
 
+// ─── Default filter state ─────────────────────────────────────────────────────
 const DEFAULT_FILTERS = {
   categories: [],
   status: "all",
@@ -331,6 +336,7 @@ const DEFAULT_FILTERS = {
   qtyMax: "",
 };
 
+// ─── Main ─────────────────────────────────────────────────────────────────────
 export default function PackingPage() {
   const [items, setItems]             = useState(INITIAL_ITEMS);
   const [search, setSearch]           = useState("");
@@ -338,7 +344,7 @@ export default function PackingPage() {
   const [editItem, setEditItem]       = useState(null);
   const [showFilter, setShowFilter]   = useState(false);
 
-  // quick pill groups - independent filters
+  // quick pill groups — independent filters
   const [quickStatus,   setQuickStatus]   = useState("all"); // "all" | "packed" | "unpacked"
   const [quickPriority, setQuickPriority] = useState("all"); // "all" | "required" | "optional"
 
@@ -362,6 +368,7 @@ export default function PackingPage() {
     return n;
   }, [appliedFilters]);
 
+  // ── Derived ──────────────────────────────────────────────────────────────────
   const filtered = useMemo(() => items.filter((i) => {
     // quick pill groups
     if (quickStatus   === "packed"   && !i.packed)               return false;
@@ -395,6 +402,7 @@ export default function PackingPage() {
   const total       = items.length;
   const pct         = total ? Math.round((packedCount / total) * 100) : 0;
 
+  // ── Handlers ─────────────────────────────────────────────────────────────────
   const toggle = (id) => setItems((prev) => prev.map((i) => i.id === id ? { ...i, packed: !i.packed } : i));
   const remove = (id) => setItems((prev) => prev.filter((i) => i.id !== id));
   const add    = (form) => setItems((prev) => [...prev, { ...form, id: Date.now() }]);
@@ -414,6 +422,7 @@ export default function PackingPage() {
     { value: "optional", label: "Optional" },
   ];
 
+  // ── Render ───────────────────────────────────────────────────────────────────
   return (
     <div className="bg-white rounded-3xl p-4 sm:p-8 min-h-full shadow-sm">
 
@@ -459,6 +468,7 @@ export default function PackingPage() {
         </div>
       </div>
 
+      {/* ── QUICK PILL GROUPS ── */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-8 mb-5">
         <div className="flex items-center gap-3 flex-wrap">
           {/* Status group */}
@@ -523,9 +533,11 @@ export default function PackingPage() {
       </div>
 
       {/* ── PROGRESS ── */}
+      {/* FIX 1: Stack vertically on mobile so text is always left-aligned and never wraps awkwardly */}
       <div className="bg-gray-50 rounded-2xl px-6 py-5 mb-8 border border-gray-100">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 gap-1">
           <span className="text-base font-bold text-gray-700">Packing Progress</span>
+          {/* On mobile: left-aligned below the label */}
           <span className="text-sm sm:text-base text-gray-500">
             <span className="font-bold text-green-600">{packedCount}</span>
             {" / "}{total} items packed
@@ -554,6 +566,7 @@ export default function PackingPage() {
                 style={{ borderColor: "oklch(93% 0.03 274)" }}
               >
                 {/* Category header */}
+                {/* FIX 2: Badge uses whitespace-nowrap so "2/3 packed" never line-breaks */}
                 <div
                   className="flex items-center justify-between px-5 py-3.5 gap-2"
                   style={{ backgroundColor: "oklch(96% 0.025 274)" }}
@@ -568,6 +581,7 @@ export default function PackingPage() {
                       {packedInCat}/{catItems.length} packed
                     </span>
                   </div>
+                  {/* Mini progress bar: desktop only */}
                   <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
                     <div className="w-24 bg-gray-200 rounded-full h-1.5 overflow-hidden">
                       <div
