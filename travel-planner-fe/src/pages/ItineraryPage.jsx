@@ -166,6 +166,10 @@ export default function ItineraryPage() {
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+// Filter states (nếu cần thêm filter theo Category hoặc Priority, có thể thêm ở đây)
+  const [dateFilter, setDateFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [priorityFilter, setPriorityFilter] = useState("All");
 
   const fetchItinerary = useCallback(() => {
     if (!selectedTripId) return;
@@ -191,9 +195,26 @@ export default function ItineraryPage() {
       </div>
     );
 
+  const today = new Date();
+
   const filteredData = itinerary
     .filter((i) => filter === "All" || i.status === filter)
-    .filter((i) => i.title.toLowerCase().includes(search.toLowerCase()));
+
+    .filter((i) =>
+      i.title.toLowerCase().includes(search.toLowerCase())
+    )
+
+    .filter((i) =>
+      !dateFilter || i.date === dateFilter
+    )
+
+    .filter((i) =>
+      categoryFilter === "All" || i.category === categoryFilter
+    )
+
+    .filter((i) =>
+      priorityFilter === "All" || i.priority === priorityFilter
+    );
 
   const statusStyles = {
     Planned: "bg-gray-100 text-gray-600 border-gray-200",
@@ -211,6 +232,19 @@ export default function ItineraryPage() {
     Sightseeing: "text-sky-500",
     Food: "text-rose-500",
     Shopping: "text-amber-500",
+  };
+
+  const isOverdue = (item) => {
+    // Nếu đã Done thì không overdue
+    if (item.status === "Done") return false;
+
+    // Ghép date + time thành datetime
+    const activityDateTime = new Date(
+      `${item.date}T${item.time}`
+    );
+
+    // So sánh với thời gian hiện tại
+    return activityDateTime < new Date();
   };
 
   return (
@@ -238,33 +272,79 @@ export default function ItineraryPage() {
       </div>
 
       {/* SEARCH & FILTER */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        {/* Tabs - Kiểu Pill giống Packing */}
-        <div className="flex items-center bg-gray-100 rounded-full p-1 gap-0.5 w-full lg:w-fit overflow-x-auto no-scrollbar">
-          {["All", "Planned", "In Progress", "Done"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setFilter(tab)}
-              className={`whitespace-nowrap px-5 py-2 rounded-full text-base font-medium transition-all ${filter === tab ? "bg-white text-indigo-600 font-semibold shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
-            >
-              {tab}
-            </button>
-          ))}
+      <div className="flex flex-col gap-4">
+        {/* TOP ROW */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          {/* Status Tabs */}
+          <div className="flex items-center bg-gray-100 rounded-full p-1 gap-0.5 w-full lg:w-fit overflow-x-auto no-scrollbar">
+            {["All", "Planned", "In Progress", "Done"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setFilter(tab)}
+                className={`whitespace-nowrap px-5 py-2 rounded-full text-base font-medium transition-all ${
+                  filter === tab
+                    ? "bg-white text-indigo-600 font-semibold shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {/* Search */}
+          <div className="relative group w-full lg:w-80">
+            <Search
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors"
+              size={17}
+            />
+
+            <input
+              type="text"
+              placeholder="Search activities..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-11 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-indigo-300 shadow-sm"
+            />
+          </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="relative group w-full lg:w-80">
-          <Search
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors"
-            size={17}
-          />
+        {/* FILTER ROW */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Date Filter */}
           <input
-            type="text"
-            placeholder="Search activities..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-indigo-300 shadow-sm"
+            type="date"
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+            className="px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300"
           />
+
+          {/* Category Filter */}
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="px-4 py-2.5 border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          >
+            <option value="All">All Categories</option>
+            <option value="Transport">Transport</option>
+            <option value="Food">Food</option>
+            <option value="Sightseeing">Sightseeing</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Hotel">Hotel</option>
+            <option value="Other">Other</option>
+          </select>
+
+          {/* Priority Filter */}
+          <select
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value)}
+            className="px-4 py-2.5 border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          >
+            <option value="All">All Priorities</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
         </div>
       </div>
 
@@ -298,7 +378,11 @@ export default function ItineraryPage() {
             {filteredData.map((item) => (
               <tr
                 key={item.id}
-                className="block md:table-row hover:bg-indigo-50/20 transition-all group"
+                className={`block md:table-row transition-all group border-l-4 ${
+                  isOverdue(item)
+                    ? "bg-red-50/40 border-red-400 hover:bg-red-50"
+                    : "hover:bg-indigo-50/20 border-transparent"
+                }`}
               >
                 {/* Date */}
                 <td className="block md:table-cell px-6 py-4 md:py-6 text-[15px] text-gray-500 font-medium">
