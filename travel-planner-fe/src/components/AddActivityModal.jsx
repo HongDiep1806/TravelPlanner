@@ -1,21 +1,25 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 
+const CATEGORY_OPTIONS = ["Transport", "Food", "Sightseeing", "Shopping", "Hotel", "Other"];
+const PRIORITY_OPTIONS = ["Low", "Medium", "High"];
+const STATUS_OPTIONS = ["Planned", "In Progress", "Done"];
+
 const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
+  const today = new Date().toISOString().split("T")[0];
+
   const initialForm = {
     title: "",
     location: "",
-    date: "",
-    time: "",
-    category: "Sightseeing", 
+    date: today,
+    time: "09:00",
+    category: "Sightseeing",
     priority: "Medium",
     status: "Planned",
   };
 
   const [formData, setFormData] = useState(initialForm);
   const [loading, setLoading] = useState(false);
-  
-  const today = new Date().toISOString().split("T")[0];
 
   if (!isOpen) return null;
 
@@ -29,21 +33,18 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `http://localhost:3000/itinerary/${tripId}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
+      const res = await fetch(`http://localhost:3000/itinerary/${tripId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-      if (response.ok) {
+      if (res.ok) {
         onRefresh();
-        handleClose(); 
+        handleClose();
       } else {
-        const error = await response.json();
-        alert(`Error: ${error.message}`);
+        const err = await res.json();
+        alert(`Error: ${err.message}`);
       }
     } catch (err) {
       alert("Failed to connect to server");
@@ -74,14 +75,17 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
           </button>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleSubmit} className="p-8 space-y-5">
           {/* Title */}
           <div className="space-y-2">
-            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Activity Title *</label>
+            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">
+              Activity Title *
+            </label>
             <input
               required
               className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 text-slate-800 font-bold focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder:text-slate-300"
-              placeholder="e.g. Visit Marble Mountains"
+              placeholder="e.g. Visit Ba Na Hills"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
             />
@@ -89,7 +93,9 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
 
           {/* Location */}
           <div className="space-y-2">
-            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Location *</label>
+            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">
+              Location *
+            </label>
             <input
               required
               className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 text-slate-800 font-bold focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder:text-slate-300"
@@ -106,7 +112,7 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
               <input
                 type="date"
                 required
-                min={today} 
+                min={today}
                 className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 text-slate-800 font-bold"
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
@@ -134,22 +140,22 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
               >
-                <option value="Flight">Flight</option>
-                <option value="Hotel">Hotel</option>
-                <option value="Food">Food</option>
-                <option value="Sightseeing">Sightseeing</option>
+                {CATEGORY_OPTIONS.map(opt => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
               </select>
             </div>
             <div className="space-y-2">
               <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Priority *</label>
               <select
+                required
                 className="w-full bg-slate-50 border-none rounded-2xl px-4 py-3.5 text-slate-800 font-bold"
                 value={formData.priority}
                 onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
               >
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
+                {PRIORITY_OPTIONS.map(opt => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -158,13 +164,14 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
           <div className="space-y-2">
             <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Status *</label>
             <select
+              required
               className="w-full bg-slate-50 border-none rounded-2xl px-4 py-3.5 text-slate-800 font-bold"
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value })}
             >
-              <option value="Planned">Planned</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Completed">Completed</option>
+              {STATUS_OPTIONS.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
             </select>
           </div>
 

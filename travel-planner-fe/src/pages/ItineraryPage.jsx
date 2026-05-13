@@ -1,5 +1,6 @@
 import { useTripSelection } from "../context/TripSelectionContext";
 import { useEffect, useState, useCallback } from "react";
+import AddActivityModal from "../components/AddActivityModal";
 import {
   Search,
   Plus,
@@ -12,151 +13,7 @@ import {
 // Màu chủ đạo đồng bộ với Packing Page
 const INDIGO = "oklch(51.1% 0.262 276.966)";
 
-// ─── MODAL COMPONENT (CHỈ CHỈNH SIZE & FONT) ───────────────────────────────────
-const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
-  const [formData, setFormData] = useState({
-    title: "",
-    location: "",
-    date: "",
-    time: "",
-    category: "Sightseeing",
-    priority: "Medium",
-    status: "Planned",
-  });
-  const [loading, setLoading] = useState(false);
-  if (!isOpen) return null;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const res = await fetch(`http://localhost:3000/itinerary/${tripId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      if (res.ok) {
-        onRefresh();
-        onClose();
-        setFormData({
-          title: "",
-          location: "",
-          date: "",
-          time: "",
-          category: "Sightseeing",
-          priority: "Medium",
-          status: "Planned",
-        });
-      } else {
-        const err = await res.json();
-        alert(err.message);
-      }
-    } catch (err) {
-      alert("Failed to connect to server");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white rounded-[32px] shadow-2xl w-full max-w-[500px] overflow-hidden animate-in fade-in zoom-in duration-200"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between p-7 pb-0">
-          <h2 className="text-xl font-bold text-gray-800">Add New Activity</h2>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg text-gray-400 transition-all"
-          >
-            <X size={20} />
-          </button>
-        </div>
-        <form onSubmit={handleSubmit} className="p-7 space-y-5">
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-500 uppercase tracking-wide ml-1">
-              Activity Title *
-            </label>
-            <input
-              required
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all"
-              placeholder="e.g. Visit Marble Mountains"
-              value={formData.title}
-              onChange={(e) =>
-                setFormData({ ...formData, title: e.target.value })
-              }
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-500 uppercase tracking-wide ml-1">
-              Location *
-            </label>
-            <input
-              required
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-all"
-              placeholder="e.g. Da Nang"
-              value={formData.location}
-              onChange={(e) =>
-                setFormData({ ...formData, location: e.target.value })
-              }
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-500 uppercase tracking-wide ml-1">
-                Date *
-              </label>
-              <input
-                type="date"
-                required
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
-                value={formData.date}
-                onChange={(e) =>
-                  setFormData({ ...formData, date: e.target.value })
-                }
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-500 uppercase tracking-wide ml-1">
-                Time *
-              </label>
-              <input
-                type="time"
-                required
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
-                value={formData.time}
-                onChange={(e) =>
-                  setFormData({ ...formData, time: e.target.value })
-                }
-              />
-            </div>
-          </div>
-          <div className="flex gap-3 mt-8">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 py-3 text-gray-600 font-medium border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              style={{ backgroundColor: INDIGO }}
-              className="flex-1 text-white py-3 rounded-xl font-semibold shadow-md hover:opacity-90 transition-all disabled:opacity-50"
-            >
-              {loading ? "Saving..." : "Save Activity"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
 
 // ─── ITINERARY PAGE (GIỮ NGUYÊN LOGIC TABLE - CHỈ SỬA TYPOGRAPHY) ──────────────
 export default function ItineraryPage() {
@@ -166,6 +23,10 @@ export default function ItineraryPage() {
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+// Filter states (nếu cần thêm filter theo Category hoặc Priority, có thể thêm ở đây)
+  const [dateFilter, setDateFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [priorityFilter, setPriorityFilter] = useState("All");
 
   const fetchItinerary = useCallback(() => {
     if (!selectedTripId) return;
@@ -191,9 +52,26 @@ export default function ItineraryPage() {
       </div>
     );
 
+  const today = new Date();
+
   const filteredData = itinerary
     .filter((i) => filter === "All" || i.status === filter)
-    .filter((i) => i.title.toLowerCase().includes(search.toLowerCase()));
+
+    .filter((i) =>
+      i.title.toLowerCase().includes(search.toLowerCase())
+    )
+
+    .filter((i) =>
+      !dateFilter || i.date === dateFilter
+    )
+
+    .filter((i) =>
+      categoryFilter === "All" || i.category === categoryFilter
+    )
+
+    .filter((i) =>
+      priorityFilter === "All" || i.priority === priorityFilter
+    );
 
   const statusStyles = {
     Planned: "bg-gray-100 text-gray-600 border-gray-200",
@@ -211,6 +89,19 @@ export default function ItineraryPage() {
     Sightseeing: "text-sky-500",
     Food: "text-rose-500",
     Shopping: "text-amber-500",
+  };
+
+  const isOverdue = (item) => {
+    // Nếu đã Done thì không overdue
+    if (item.status === "Done") return false;
+
+    // Ghép date + time thành datetime
+    const activityDateTime = new Date(
+      `${item.date}T${item.time}`
+    );
+
+    // So sánh với thời gian hiện tại
+    return activityDateTime < new Date();
   };
 
   return (
@@ -238,33 +129,79 @@ export default function ItineraryPage() {
       </div>
 
       {/* SEARCH & FILTER */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        {/* Tabs - Kiểu Pill giống Packing */}
-        <div className="flex items-center bg-gray-100 rounded-full p-1 gap-0.5 w-full lg:w-fit overflow-x-auto no-scrollbar">
-          {["All", "Planned", "In Progress", "Done"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setFilter(tab)}
-              className={`whitespace-nowrap px-5 py-2 rounded-full text-base font-medium transition-all ${filter === tab ? "bg-white text-indigo-600 font-semibold shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
-            >
-              {tab}
-            </button>
-          ))}
+      <div className="flex flex-col gap-4">
+        {/* TOP ROW */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          {/* Status Tabs */}
+          <div className="flex items-center bg-gray-100 rounded-full p-1 gap-0.5 w-full lg:w-fit overflow-x-auto no-scrollbar">
+            {["All", "Planned", "In Progress", "Done"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setFilter(tab)}
+                className={`whitespace-nowrap px-5 py-2 rounded-full text-base font-medium transition-all ${
+                  filter === tab
+                    ? "bg-white text-indigo-600 font-semibold shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {/* Search */}
+          <div className="relative group w-full lg:w-80">
+            <Search
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors"
+              size={17}
+            />
+
+            <input
+              type="text"
+              placeholder="Search activities..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-11 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-indigo-300 shadow-sm"
+            />
+          </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="relative group w-full lg:w-80">
-          <Search
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors"
-            size={17}
-          />
+        {/* FILTER ROW */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Date Filter */}
           <input
-            type="text"
-            placeholder="Search activities..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-indigo-300 shadow-sm"
+            type="date"
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+            className="px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300"
           />
+
+          {/* Category Filter */}
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="px-4 py-2.5 border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          >
+            <option value="All">All Categories</option>
+            <option value="Transport">Transport</option>
+            <option value="Food">Food</option>
+            <option value="Sightseeing">Sightseeing</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Hotel">Hotel</option>
+            <option value="Other">Other</option>
+          </select>
+
+          {/* Priority Filter */}
+          <select
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value)}
+            className="px-4 py-2.5 border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          >
+            <option value="All">All Priorities</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
         </div>
       </div>
 
@@ -298,7 +235,11 @@ export default function ItineraryPage() {
             {filteredData.map((item) => (
               <tr
                 key={item.id}
-                className="block md:table-row hover:bg-indigo-50/20 transition-all group"
+                className={`block md:table-row transition-all group border-l-4 ${
+                  isOverdue(item)
+                    ? "bg-red-50/40 border-red-400 hover:bg-red-50"
+                    : "hover:bg-indigo-50/20 border-transparent"
+                }`}
               >
                 {/* Date */}
                 <td className="block md:table-cell px-6 py-4 md:py-6 text-[15px] text-gray-500 font-medium">

@@ -131,6 +131,14 @@
         "quantity": 1,
         "requiredStatus": "Optional",
         "packedStatus": "Packed"
+      },
+      {
+        "id": 8,
+        "name": "Ba Na Hill Ticket - Online ticket",
+        "category": "Documents",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Not Packed"
       }
     ],
     "budgetItems": [
@@ -963,5 +971,43 @@
         "paymentStatus": "Paid"
       }
     ]
+  },
+  {
+    "id": 6,
+    "tripName": "Phu Quoc Trip",
+    "budget": 5000000,
+    "itinerary": [
+      {
+        "id": 1,
+        "title": "VinWonder",
+        "location": "Phu Quoc 103",
+        "date": "2026-05-14",
+        "time": "14:22",
+        "category": "Sightseeing",
+        "priority": "Medium",
+        "status": "Planned"
+      },
+      {
+        "id": 2,
+        "title": "Local food",
+        "location": "123 Tran Phu",
+        "date": "2026-05-14",
+        "time": "09:00",
+        "category": "Food",
+        "priority": "High",
+        "status": "Planned"
+      }
+    ],
+    "packingList": [
+      {
+        "id": 1,
+        "name": "Passport",
+        "category": "Clothes",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Packed"
+      }
+    ],
+    "budgetItems": []
   }
 ]
