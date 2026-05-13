@@ -986,6 +986,16 @@
         "category": "Sightseeing",
         "priority": "Medium",
         "status": "Planned"
+      },
+      {
+        "id": 2,
+        "title": "Local food",
+        "location": "123 Tran Phu",
+        "date": "2026-05-14",
+        "time": "09:00",
+        "category": "Food",
+        "priority": "High",
+        "status": "Planned"
       }
     ],
     "packingList": [
