@@ -49,17 +49,18 @@ export default function MainLayout() {
           <button className="w-full flex items-center gap-4 bg-indigo-50 text-indigo-700 rounded-2xl px-5 py-4 font-bold transition">
             <LayoutGrid size={20} /> My Trips
           </button>
-          <button className="w-full flex items-center gap-4 bg-indigo-600 text-white rounded-2xl px-5 py-4 font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition">
+          {/* <button className="w-full flex items-center gap-4 bg-indigo-600 text-white rounded-2xl px-5 py-4 font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition">
             <Plus size={20} /> New Trip
-          </button>
-
-          <div className="pt-10 space-y-2">
-            <button className="w-full flex items-center gap-4 text-slate-400 rounded-2xl px-5 py-4 font-medium hover:bg-slate-50 transition">
+          </button> */}
+          <button className="w-full flex items-center gap-4 text-slate-400 rounded-2xl px-5 py-4 font-medium hover:bg-slate-50 transition">
               <Settings size={20} /> Settings
             </button>
             <button className="w-full flex items-center gap-4 text-slate-400 rounded-2xl px-5 py-4 font-medium hover:bg-slate-50 transition">
               <Info size={20} /> About
             </button>
+
+          <div className="pt-10 space-y-2">
+            
           </div>
         </nav>
 
