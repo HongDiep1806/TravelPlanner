@@ -170,18 +170,22 @@ export default function PackingPage() {
       </div>
 
       {/* Quick pill groups + search */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-8 mb-5">
-        <div className="flex items-center gap-3 flex-wrap">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-6 mb-4">
+        <div className="flex items-center gap-2 flex-wrap">
           <div className="flex items-center bg-gray-100 rounded-full p-1 gap-0.5">
             {STATUS_PILLS.map(({ value, label }) => (
               <button
                 key={value}
                 onClick={() => setQuickStatus(value)}
-                className={`px-5 py-2 rounded-full text-base font-medium transition-all
-                  ${appliedFilters.status === value ? "bg-white text-indigo-600 font-semibold" : "text-gray-500 hover:text-gray-700"}`}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all
+                  ${
+                    appliedFilters.status === value
+                      ? "bg-white text-indigo-600 font-semibold"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
                 style={
                   appliedFilters.status === value
-                    ? { boxShadow: "0 1px 3px rgba(0,0,0,0.12)" }
+                    ? { boxShadow: "0 1px 2px rgba(0,0,0,0.1)" }
                     : {}
                 }
               >
@@ -190,18 +194,22 @@ export default function PackingPage() {
             ))}
           </div>
 
-          <div className="hidden sm:block w-px h-6 bg-gray-200" />
+          <div className="hidden sm:block w-px h-5 bg-gray-200" />
 
           <div className="flex items-center bg-gray-100 rounded-full p-1 gap-0.5">
             {PRIORITY_PILLS.map(({ value, label }) => (
               <button
                 key={value}
                 onClick={() => setQuickPriority(value)}
-                className={`px-5 py-2 rounded-full text-base font-medium transition-all
-                  ${appliedFilters.required === value ? "bg-white text-indigo-600 font-semibold" : "text-gray-500 hover:text-gray-700"}`}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all
+                  ${
+                    appliedFilters.required === value
+                      ? "bg-white text-indigo-600 font-semibold"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
                 style={
                   appliedFilters.required === value
-                    ? { boxShadow: "0 1px 3px rgba(0,0,0,0.12)" }
+                    ? { boxShadow: "0 1px 2px rgba(0,0,0,0.1)" }
                     : {}
                 }
               >
@@ -213,22 +221,24 @@ export default function PackingPage() {
 
         <div className="relative sm:ml-auto">
           <Search
-            size={17}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+            size={15}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
           />
+
           <input
             type="text"
             placeholder="Search items..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full sm:w-64 pl-11 pr-9 py-2.5 border border-gray-200 rounded-xl text-base text-gray-700 placeholder-gray-400 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent transition"
+            className="w-full sm:w-66 pl-9 pr-8 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 placeholder-gray-400 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent transition"
           />
+
           {search && (
             <button
               onClick={() => setSearch("")}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
             >
-              <X size={15} />
+              <X size={13} />
             </button>
           )}
         </div>
