@@ -17,7 +17,14 @@ import {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const INDIGO = "oklch(51.1% 0.262 276.966)";
-const CATEGORIES = ["Transport", "Food", "Sightseeing", "Shopping", "Hotel", "Other"];
+const CATEGORIES = [
+  "Transport",
+  "Food",
+  "Sightseeing",
+  "Shopping",
+  "Hotel",
+  "Other",
+];
 const STATUS_OPTIONS = ["All", "Planned", "In Progress", "Done"];
 const PRIORITY_OPTIONS = ["All", "High", "Medium", "Low"];
 
@@ -71,8 +78,13 @@ function DeleteConfirmModal({ isOpen, onConfirm, onCancel }) {
 // ─── Add / Edit Activity Modal ────────────────────────────────────────────────
 function ActivityModal({ initial, onClose, onSave, loading }) {
   const empty = {
-    title: "", location: "", date: "", time: "",
-    category: "Sightseeing", priority: "Medium", status: "Planned",
+    title: "",
+    location: "",
+    date: "",
+    time: "",
+    category: "Sightseeing",
+    priority: "Medium",
+    status: "Planned",
   };
   const [form, setForm] = useState(initial ? { ...initial } : empty);
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
@@ -81,7 +93,8 @@ function ActivityModal({ initial, onClose, onSave, loading }) {
     "w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition placeholder-gray-400";
   const selectCls =
     "w-full border border-gray-200 rounded-xl px-3 py-2.5 text-base text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 transition";
-  const labelCls = "block text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1.5";
+  const labelCls =
+    "block text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1.5";
 
   return (
     <div
@@ -129,24 +142,44 @@ function ActivityModal({ initial, onClose, onSave, loading }) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={labelCls}>Date</label>
-              <input type="date" className={inputCls} value={form.date} onChange={(e) => set("date", e.target.value)} />
+              <input
+                type="date"
+                className={inputCls}
+                value={form.date}
+                onChange={(e) => set("date", e.target.value)}
+              />
             </div>
             <div>
               <label className={labelCls}>Time</label>
-              <input type="time" className={inputCls} value={form.time} onChange={(e) => set("time", e.target.value)} />
+              <input
+                type="time"
+                className={inputCls}
+                value={form.time}
+                onChange={(e) => set("time", e.target.value)}
+              />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={labelCls}>Category</label>
-              <select className={selectCls} value={form.category} onChange={(e) => set("category", e.target.value)}>
-                {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+              <select
+                className={selectCls}
+                value={form.category}
+                onChange={(e) => set("category", e.target.value)}
+              >
+                {CATEGORIES.map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
               </select>
             </div>
             <div>
               <label className={labelCls}>Priority</label>
-              <select className={selectCls} value={form.priority} onChange={(e) => set("priority", e.target.value)}>
+              <select
+                className={selectCls}
+                value={form.priority}
+                onChange={(e) => set("priority", e.target.value)}
+              >
                 <option>High</option>
                 <option>Medium</option>
                 <option>Low</option>
@@ -156,7 +189,11 @@ function ActivityModal({ initial, onClose, onSave, loading }) {
 
           <div>
             <label className={labelCls}>Status</label>
-            <select className={selectCls} value={form.status} onChange={(e) => set("status", e.target.value)}>
+            <select
+              className={selectCls}
+              value={form.status}
+              onChange={(e) => set("status", e.target.value)}
+            >
               <option>Planned</option>
               <option>In Progress</option>
               <option>Done</option>
@@ -173,7 +210,9 @@ function ActivityModal({ initial, onClose, onSave, loading }) {
           </button>
           <button
             disabled={loading || !form.title.trim()}
-            onClick={() => { if (form.title.trim()) onSave(form); }}
+            onClick={() => {
+              if (form.title.trim()) onSave(form);
+            }}
             style={{ backgroundColor: INDIGO }}
             className="flex-1 text-white rounded-xl py-3 text-base font-semibold hover:opacity-90 transition shadow-md disabled:opacity-50 flex items-center justify-center gap-2"
           >
@@ -222,17 +261,28 @@ function FilterOverlay({ filters, onChange, onApply, onClear, onClose }) {
       <div className="fixed inset-0 z-30 bg-black/10" onClick={onClose} />
       <div
         className="fixed right-4 sm:right-6 z-40 bg-white rounded-2xl shadow-2xl border border-gray-100 w-[calc(100vw-2rem)] sm:w-80 flex flex-col"
-        style={{ top: "50%", transform: "translateY(-50%)", maxHeight: "calc(100vh - 80px)" }}
+        style={{
+          top: "50%",
+          transform: "translateY(-50%)",
+          maxHeight: "calc(100vh - 80px)",
+        }}
       >
         <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-gray-100">
           <span className="text-base font-bold text-gray-800">Filters</span>
           <div className="flex items-center gap-3">
             {hasActive && (
-              <button onClick={onClear} className="text-sm font-semibold" style={{ color: INDIGO }}>
+              <button
+                onClick={onClear}
+                className="text-sm font-semibold"
+                style={{ color: INDIGO }}
+              >
                 Clear all
               </button>
             )}
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition">
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 transition"
+            >
               <X size={16} />
             </button>
           </div>
@@ -252,7 +302,13 @@ function FilterOverlay({ filters, onChange, onApply, onClear, onClose }) {
                       ${active ? "text-indigo-600 bg-indigo-50" : "text-gray-600 hover:bg-gray-50"}`}
                   >
                     <span className="truncate">{cat}</span>
-                    {active && <Check size={12} className="ml-auto flex-shrink-0 text-indigo-500" strokeWidth={3} />}
+                    {active && (
+                      <Check
+                        size={12}
+                        className="ml-auto flex-shrink-0 text-indigo-500"
+                        strokeWidth={3}
+                      />
+                    )}
                   </button>
                 );
               })}
@@ -296,7 +352,10 @@ function FilterOverlay({ filters, onChange, onApply, onClear, onClose }) {
             Cancel
           </button>
           <button
-            onClick={() => { onApply(); onClose(); }}
+            onClick={() => {
+              onApply();
+              onClose();
+            }}
             style={{ backgroundColor: INDIGO }}
             className="flex-1 text-white rounded-xl py-2.5 text-sm font-semibold hover:opacity-90 transition shadow-md"
           >
@@ -310,39 +369,39 @@ function FilterOverlay({ filters, onChange, onApply, onClear, onClose }) {
 
 // ─── Style maps ───────────────────────────────────────────────────────────────
 const statusStyles = {
-  Planned:      "bg-gray-100 text-gray-700",
+  Planned: "bg-gray-100 text-gray-700",
   "In Progress": "bg-blue-50 text-blue-700",
-  Done:          "bg-green-50 text-green-700",
+  Done: "bg-green-50 text-green-700",
 };
 
 const priorityStyles = {
-  High:   { text: "text-red-600",    bg: "bg-red-50"    },
+  High: { text: "text-red-600", bg: "bg-red-50" },
   Medium: { text: "text-orange-500", bg: "bg-orange-50" },
-  Low:    { text: "text-green-600",  bg: "bg-green-50"  },
+  Low: { text: "text-green-600", bg: "bg-green-50" },
 };
 
 const categoryColors = {
-  Transport:   "text-green-600",
-  Hotel:       "text-indigo-600",
+  Transport: "text-green-600",
+  Hotel: "text-indigo-600",
   Sightseeing: "text-sky-600",
-  Food:        "text-rose-600",
-  Shopping:    "text-amber-600",
+  Food: "text-rose-600",
+  Shopping: "text-amber-600",
 };
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export default function ItineraryPage() {
   const { selectedTripId } = useTripSelection();
   const [itinerary, setItinerary] = useState([]);
-  const [loading, setLoading]     = useState(false);
-  const [mutating, setMutating]   = useState(false);  // add/edit/delete in progress
+  const [loading, setLoading] = useState(false);
+  const [mutating, setMutating] = useState(false); // add/edit/delete in progress
 
-  const [search, setSearch]             = useState("");
-  const [isModalOpen, setIsModalOpen]   = useState(false);
+  const [search, setSearch] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [activityToEdit, setActivityToEdit] = useState(null);
-  const [openMenuId, setOpenMenuId]     = useState(null);
+  const [openMenuId, setOpenMenuId] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 });
   const [deleteTargetId, setDeleteTargetId] = useState(null);
-  const [showFilter, setShowFilter]     = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
 
   // Single source of truth: all filters live here; inline dropdowns + pills are shortcuts into it
   const [pendingFilters, setPendingFilters] = useState(DEFAULT_FILTERS);
@@ -359,7 +418,9 @@ export default function ItineraryPage() {
       .finally(() => setLoading(false));
   }, [selectedTripId]);
 
-  useEffect(() => { fetchItinerary(); }, [fetchItinerary]);
+  useEffect(() => {
+    fetchItinerary();
+  }, [fetchItinerary]);
 
   // ── Filter helpers — all update both applied & pending so overlay stays in sync ──
   const setFilter = (patch) => {
@@ -368,19 +429,23 @@ export default function ItineraryPage() {
     setPendingFilters(next);
   };
 
-  const quickStatus   = appliedFilters.status;
+  const quickStatus = appliedFilters.status;
   const quickPriority = appliedFilters.priority;
 
-  const setQuickStatus   = (v) => setFilter({ status: v });
+  const setQuickStatus = (v) => setFilter({ status: v });
   const setQuickPriority = (v) => setFilter({ priority: v });
 
   // Inline dropdown shortcuts
-  const setDateFilter     = (v) => setFilter({ date: v });
-  const setCategoryFilter = (v) => setFilter({ categories: v === "All" ? [] : [v] });
+  const setDateFilter = (v) => setFilter({ date: v });
+  const setCategoryFilter = (v) =>
+    setFilter({ categories: v === "All" ? [] : [v] });
 
   // Derived single-value reads for the inline dropdowns (controlled values)
-  const dateFilter     = appliedFilters.date;
-  const categoryFilter = appliedFilters.categories.length === 1 ? appliedFilters.categories[0] : "All";
+  const dateFilter = appliedFilters.date;
+  const categoryFilter =
+    appliedFilters.categories.length === 1
+      ? appliedFilters.categories[0]
+      : "All";
 
   const handleApply = () => setAppliedFilters(pendingFilters);
   const handleClear = () => {
@@ -390,9 +455,9 @@ export default function ItineraryPage() {
 
   const activeFilterCount =
     (appliedFilters.categories.length > 0 ? 1 : 0) +
-    (appliedFilters.status   !== "All" ? 1 : 0) +
+    (appliedFilters.status !== "All" ? 1 : 0) +
     (appliedFilters.priority !== "All" ? 1 : 0) +
-    (appliedFilters.date     !== ""    ? 1 : 0);
+    (appliedFilters.date !== "" ? 1 : 0);
 
   // ── API handlers ──────────────────────────────────────────────────────────
   const handleEdit = (itemId) => {
@@ -411,13 +476,19 @@ export default function ItineraryPage() {
   // Delete → DELETE /itinerary/:tripId/:id
   const confirmDelete = async () => {
     try {
-      const res = await fetch(`${API_BASE}/itinerary/${selectedTripId}/${deleteTargetId}`, { method: "DELETE" });
+      const res = await fetch(
+        `${API_BASE}/itinerary/${selectedTripId}/${deleteTargetId}`,
+        { method: "DELETE" },
+      );
       if (res.ok) {
         toast.success("Activity deleted successfully!");
 
         fetchItinerary();
       } else {
-        const msg = await res.json().then((d) => d.message).catch(() => `Server error (${res.status})`);
+        const msg = await res
+          .json()
+          .then((d) => d.message)
+          .catch(() => `Server error (${res.status})`);
         alert(`Failed to delete activity: ${msg}`);
       }
     } catch {
@@ -445,21 +516,31 @@ export default function ItineraryPage() {
       fetchItinerary();
       setIsModalOpen(false);
       setActivityToEdit(null);
+      toast.success(
+        activityToEdit
+          ? "Activity updated successfully!"
+          : "Activity created successfully!",
+      );
     } catch (err) {
-      alert(`Error: ${err.message}`);
+      toast.error(`Error: ${err.message}`);
     } finally {
       setMutating(false);
     }
   };
 
-  const handleModalClose = () => { setIsModalOpen(false); setActivityToEdit(null); };
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setActivityToEdit(null);
+  };
 
   // ── Early return: no trip selected ───────────────────────────────────────
   if (!selectedTripId)
     return (
       <div className="flex flex-col items-center justify-center h-64 text-gray-400 bg-white rounded-3xl shadow-sm border border-dashed border-gray-200 m-4">
         <Calendar size={40} className="mb-4 opacity-20" />
-        <p className="font-medium text-base text-center px-4">Please select a trip to view itinerary</p>
+        <p className="font-medium text-base text-center px-4">
+          Please select a trip to view itinerary
+        </p>
       </div>
     );
 
@@ -467,9 +548,20 @@ export default function ItineraryPage() {
   const filteredData = itinerary
     .filter((i) => i.title.toLowerCase().includes(search.toLowerCase()))
     .filter((i) => !appliedFilters.date || i.date === appliedFilters.date)
-    .filter((i) => appliedFilters.categories.length === 0 || appliedFilters.categories.includes(i.category))
-    .filter((i) => appliedFilters.status   === "All" || i.status   === appliedFilters.status)
-    .filter((i) => appliedFilters.priority === "All" || i.priority === appliedFilters.priority);
+    .filter(
+      (i) =>
+        appliedFilters.categories.length === 0 ||
+        appliedFilters.categories.includes(i.category),
+    )
+    .filter(
+      (i) =>
+        appliedFilters.status === "All" || i.status === appliedFilters.status,
+    )
+    .filter(
+      (i) =>
+        appliedFilters.priority === "All" ||
+        i.priority === appliedFilters.priority,
+    );
 
   // An item is overdue if it's not Done and its datetime is in the past
   const isOverdue = (item) => {
@@ -484,12 +576,13 @@ export default function ItineraryPage() {
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="bg-white rounded-3xl p-4 sm:p-8 min-h-full shadow-sm">
-
       {/* ── HEADER ── */}
       <div className="flex items-start justify-between mb-1">
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Itinerary</h1>
-          <p className="text-base font-semibold text-gray-500 mt-2">Manage all your activities and plans.</p>
+          <p className="text-base font-semibold text-gray-500 mt-2">
+            Manage all your activities and plans.
+          </p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0 ml-3">
           <button
@@ -502,11 +595,15 @@ export default function ItineraryPage() {
           </button>
 
           <button
-            onClick={() => { setPendingFilters(appliedFilters); setShowFilter((v) => !v); }}
+            onClick={() => {
+              setPendingFilters(appliedFilters);
+              setShowFilter((v) => !v);
+            }}
             className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-base font-semibold border transition shadow-sm
-              ${showFilter || activeFilterCount > 0
-                ? "border-indigo-300 bg-indigo-50 text-indigo-600"
-                : "border-gray-200 bg-white text-gray-600 hover:border-indigo-200 hover:text-indigo-500"
+              ${
+                showFilter || activeFilterCount > 0
+                  ? "border-indigo-300 bg-indigo-50 text-indigo-600"
+                  : "border-gray-200 bg-white text-gray-600 hover:border-indigo-200 hover:text-indigo-500"
               }`}
           >
             <SlidersHorizontal size={17} />
@@ -534,7 +631,11 @@ export default function ItineraryPage() {
                 onClick={() => setQuickStatus(tab)}
                 className={`whitespace-nowrap px-3 py-1.5 rounded-full text-sm font-medium transition-all
                   ${quickStatus === tab ? "bg-white text-indigo-600 font-semibold" : "text-gray-500 hover:text-gray-700"}`}
-                style={quickStatus === tab ? { boxShadow: "0 1px 2px rgba(0,0,0,0.1)" } : {}}
+                style={
+                  quickStatus === tab
+                    ? { boxShadow: "0 1px 2px rgba(0,0,0,0.1)" }
+                    : {}
+                }
               >
                 {tab}
               </button>
@@ -551,7 +652,11 @@ export default function ItineraryPage() {
                 onClick={() => setQuickPriority(tab)}
                 className={`whitespace-nowrap px-3 py-1.5 rounded-full text-sm font-medium transition-all
                   ${quickPriority === tab ? "bg-white text-indigo-600 font-semibold" : "text-gray-500 hover:text-gray-700"}`}
-                style={quickPriority === tab ? { boxShadow: "0 1px 2px rgba(0,0,0,0.1)" } : {}}
+                style={
+                  quickPriority === tab
+                    ? { boxShadow: "0 1px 2px rgba(0,0,0,0.1)" }
+                    : {}
+                }
               >
                 {tab}
               </button>
@@ -561,7 +666,10 @@ export default function ItineraryPage() {
 
         {/* Search */}
         <div className="relative sm:ml-auto">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <Search
+            size={15}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+          />
           <input
             type="text"
             placeholder="Search activities..."
@@ -570,7 +678,10 @@ export default function ItineraryPage() {
             className="w-full sm:w-66 pl-9 pr-8 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 placeholder-gray-400 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-transparent transition"
           />
           {search && (
-            <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+            >
               <X size={13} />
             </button>
           )}
@@ -598,11 +709,15 @@ export default function ItineraryPage() {
           ))}
         </select>
       </div>
-      
+
       {/* ── LOADING / TABLE ── */}
       {loading ? (
         <div className="flex items-center justify-center py-20 gap-3 text-gray-400">
-          <Loader2 size={24} className="animate-spin" style={{ color: INDIGO }} />
+          <Loader2
+            size={24}
+            className="animate-spin"
+            style={{ color: INDIGO }}
+          />
           <span className="text-base font-medium">Loading itinerary…</span>
         </div>
       ) : (
@@ -613,7 +728,16 @@ export default function ItineraryPage() {
           <table className="w-full text-left border-separate border-spacing-0">
             <thead className="hidden md:table-header-group">
               <tr style={{ backgroundColor: "oklch(96% 0.025 274)" }}>
-                {["Date", "Activity", "Location", "Time", "Category", "Priority", "Status", ""].map((h) => (
+                {[
+                  "Date",
+                  "Activity",
+                  "Location",
+                  "Time",
+                  "Category",
+                  "Priority",
+                  "Status",
+                  "",
+                ].map((h) => (
                   <th
                     key={h}
                     className={`px-6 py-4 text-[11px] font-bold uppercase tracking-[0.1em] ${h === "" ? "w-10" : ""}`}
@@ -625,10 +749,16 @@ export default function ItineraryPage() {
               </tr>
             </thead>
 
-            <tbody className="divide-y bg-white" style={{ borderColor: "oklch(0.96 0.015 274)" }}>
+            <tbody
+              className="divide-y bg-white"
+              style={{ borderColor: "oklch(0.96 0.015 274)" }}
+            >
               {filteredData.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-16 text-gray-400 text-sm">
+                  <td
+                    colSpan={8}
+                    className="text-center py-16 text-gray-400 text-sm"
+                  >
                     No activities match your filter.
                   </td>
                 </tr>
@@ -644,48 +774,72 @@ export default function ItineraryPage() {
                   >
                     {/* Date */}
                     <td className="block md:table-cell px-6 py-4 md:py-5 text-sm text-gray-500">
-                      <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">Date</span>
+                      <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">
+                        Date
+                      </span>
                       <span className="whitespace-nowrap">{item.date}</span>
                     </td>
 
                     {/* Activity */}
                     <td className="block md:table-cell px-6 py-2 md:py-5">
-                      <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">Activity</span>
-                      <span className="text-base font-semibold text-gray-800">{item.title}</span>
+                      <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">
+                        Activity
+                      </span>
+                      <span className="text-base font-semibold text-gray-800">
+                        {item.title}
+                      </span>
                     </td>
 
                     {/* Location */}
                     <td className="block md:table-cell px-6 py-2 md:py-5 text-sm text-gray-500">
-                      <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">Location</span>
-                      <div className="max-w-[200px] truncate md:whitespace-normal">{item.location}</div>
+                      <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">
+                        Location
+                      </span>
+                      <div className="max-w-[200px] truncate md:whitespace-normal">
+                        {item.location}
+                      </div>
                     </td>
 
                     {/* Time */}
                     <td className="block md:table-cell px-6 py-2 md:py-5 text-sm text-gray-600 font-medium">
-                      <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">Time</span>
+                      <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">
+                        Time
+                      </span>
                       {item.time}
                     </td>
 
                     {/* Category */}
-                    <td className={`block md:table-cell px-6 py-2 md:py-5 text-sm font-semibold ${categoryColors[item.category] || "text-gray-600"}`}>
-                      <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">Category</span>
+                    <td
+                      className={`block md:table-cell px-6 py-2 md:py-5 text-sm font-semibold ${categoryColors[item.category] || "text-gray-600"}`}
+                    >
+                      <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">
+                        Category
+                      </span>
                       {item.category}
                     </td>
 
                     {/* Priority — colored badge with light background */}
                     <td className="block md:table-cell px-6 py-3 md:py-5">
-                      <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">Priority</span>
-                      <span className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap
+                      <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">
+                        Priority
+                      </span>
+                      <span
+                        className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap
                         ${priorityStyles[item.priority]?.text || "text-gray-600"}
-                        ${priorityStyles[item.priority]?.bg  || "bg-gray-50"}`}>
+                        ${priorityStyles[item.priority]?.bg || "bg-gray-50"}`}
+                      >
                         {item.priority}
                       </span>
                     </td>
 
                     {/* Status */}
                     <td className="block md:table-cell px-6 py-3 md:py-5">
-                      <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">Status</span>
-                      <span className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap ${statusStyles[item.status] || "bg-gray-100 text-gray-600"}`}>
+                      <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">
+                        Status
+                      </span>
+                      <span
+                        className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap ${statusStyles[item.status] || "bg-gray-100 text-gray-600"}`}
+                      >
                         {item.status}
                       </span>
                     </td>
@@ -697,8 +851,12 @@ export default function ItineraryPage() {
                           if (openMenuId === item.id) {
                             setOpenMenuId(null);
                           } else {
-                            const rect = e.currentTarget.getBoundingClientRect();
-                            setMenuPosition({ top: rect.bottom + 8, right: window.innerWidth - rect.right });
+                            const rect =
+                              e.currentTarget.getBoundingClientRect();
+                            setMenuPosition({
+                              top: rect.bottom + 8,
+                              right: window.innerWidth - rect.right,
+                            });
                             setOpenMenuId(Number(item.id));
                           }
                         }}
