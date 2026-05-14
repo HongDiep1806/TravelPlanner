@@ -2,20 +2,28 @@ import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { Plus, Search, X, SlidersHorizontal, Loader2 } from "lucide-react";
 
-import { INDIGO, PACKING_CATEGORIES, DEFAULT_FILTERS, STATUS_PILLS, PRIORITY_PILLS } from "../components/packing/packingConstants";
+import {
+  INDIGO,
+  PACKING_CATEGORIES,
+  DEFAULT_FILTERS,
+  STATUS_PILLS,
+  PRIORITY_PILLS,
+} from "../components/packing/packingConstants";
 import { usePackingItems } from "../hooks/usePackingItems";
 import { FilterOverlay } from "../components/packing/FilterOverlay";
 import { ItemModal } from "../components/packing/ItemModal";
 import { CategorySection } from "../components/packing/CategorySection";
 import { ProgressBar } from "../components/packing/ProgressBar";
+import toast from "react-hot-toast";
 
 export default function PackingPage() {
   const { tripId } = useParams();
-  const { items, loading, apiError, mutating, toggle, remove, add, save } = usePackingItems(tripId);
+  const { items, loading, apiError, mutating, toggle, remove, add, save } =
+    usePackingItems(tripId);
 
-  const [search, setSearch]         = useState("");
-  const [showModal, setShowModal]   = useState(false);
-  const [editItem, setEditItem]     = useState(null);
+  const [search, setSearch] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [editItem, setEditItem] = useState(null);
   const [showFilter, setShowFilter] = useState(false);
 
   const [pendingFilters, setPendingFilters] = useState(DEFAULT_FILTERS);
@@ -49,20 +57,42 @@ export default function PackingPage() {
   }, [appliedFilters]);
 
   // ── Derived list ──────────────────────────────────────────────────────────
-  const filtered = useMemo(() => items.filter((i) => {
-    if (appliedFilters.categories.length && !appliedFilters.categories.includes(i.category)) return false;
-    if (appliedFilters.status === "packed"   && !i.packed)  return false;
-    if (appliedFilters.status === "unpacked" &&  i.packed)  return false;
-    if (appliedFilters.required !== "all" && i.required !== appliedFilters.required) return false;
-    if (appliedFilters.qtyMin !== "" && i.qty < Number(appliedFilters.qtyMin)) return false;
-    if (appliedFilters.qtyMax !== "" && i.qty > Number(appliedFilters.qtyMax)) return false;
-    if (search && !i.name.toLowerCase().includes(search.toLowerCase())) return false;
-    return true;
-  }), [items, appliedFilters, search]);
+  const filtered = useMemo(
+    () =>
+      items.filter((i) => {
+        if (
+          appliedFilters.categories.length &&
+          !appliedFilters.categories.includes(i.category)
+        )
+          return false;
+        if (appliedFilters.status === "packed" && !i.packed) return false;
+        if (appliedFilters.status === "unpacked" && i.packed) return false;
+        if (
+          appliedFilters.required !== "all" &&
+          i.required !== appliedFilters.required
+        )
+          return false;
+        if (
+          appliedFilters.qtyMin !== "" &&
+          i.qty < Number(appliedFilters.qtyMin)
+        )
+          return false;
+        if (
+          appliedFilters.qtyMax !== "" &&
+          i.qty > Number(appliedFilters.qtyMax)
+        )
+          return false;
+        if (search && !i.name.toLowerCase().includes(search.toLowerCase()))
+          return false;
+        return true;
+      }),
+    [items, appliedFilters, search],
+  );
 
   const grouped = useMemo(() => {
     const map = {};
-    PACKING_CATEGORIES.forEach((cat) => {           // ← duyệt theo CATEGORIES trước
+    PACKING_CATEGORIES.forEach((cat) => {
+      // ← duyệt theo CATEGORIES trước
       const catItems = filtered.filter((i) => i.category === cat);
       if (catItems.length > 0) map[cat] = catItems;
     });
@@ -74,23 +104,34 @@ export default function PackingPage() {
   // ── Handlers ──────────────────────────────────────────────────────────────
   const handleAdd = async (form) => {
     const ok = await add(form);
-    if (ok) setShowModal(false);
+    if (ok) {
+      setShowModal(false);
+      toast.success("Item added successfully!");
+    } else {
+      toast.error("Failed to add item.");
+    }
   };
 
   const handleSave = async (form) => {
     const ok = await save(editItem.id, form);
-    if (ok) setEditItem(null);
+    if (ok) {
+      setEditItem(null);
+      toast.success("Item updated successfully!");
+    } else {
+      toast.error("Failed to update item.");
+    }
   };
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="bg-white rounded-3xl p-4 sm:p-8 min-h-full shadow-sm">
-
       {/* Header */}
       <div className="flex items-start justify-between mb-1">
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Packing List</h1>
-          <p className="text-base font-semibold text-gray-500 mt-2">Manage items you need to bring.</p>
+          <p className="text-base font-semibold text-gray-500 mt-2">
+            Manage items you need to bring.
+          </p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0 ml-3">
           <button
@@ -103,11 +144,15 @@ export default function PackingPage() {
           </button>
 
           <button
-            onClick={() => { setPendingFilters(appliedFilters); setShowFilter((v) => !v); }}
+            onClick={() => {
+              setPendingFilters(appliedFilters);
+              setShowFilter((v) => !v);
+            }}
             className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-base font-semibold border transition shadow-sm
-              ${showFilter || activeFilterCount > 0
-                ? "border-indigo-300 bg-indigo-50 text-indigo-600"
-                : "border-gray-200 bg-white text-gray-600 hover:border-indigo-200 hover:text-indigo-500"
+              ${
+                showFilter || activeFilterCount > 0
+                  ? "border-indigo-300 bg-indigo-50 text-indigo-600"
+                  : "border-gray-200 bg-white text-gray-600 hover:border-indigo-200 hover:text-indigo-500"
               }`}
           >
             <SlidersHorizontal size={17} />
@@ -205,7 +250,11 @@ export default function PackingPage() {
       {/* Loading / Error / List */}
       {loading ? (
         <div className="flex items-center justify-center py-20 gap-3 text-gray-400">
-          <Loader2 size={24} className="animate-spin" style={{ color: INDIGO }} />
+          <Loader2
+            size={24}
+            className="animate-spin"
+            style={{ color: INDIGO }}
+          />
           <span className="text-base font-medium">Loading packing list…</span>
         </div>
       ) : apiError ? (
@@ -222,7 +271,9 @@ export default function PackingPage() {
       ) : (
         <div className="space-y-8">
           {Object.keys(grouped).length === 0 ? (
-            <div className="text-center py-16 text-gray-400 text-base">No items match your filter.</div>
+            <div className="text-center py-16 text-gray-400 text-base">
+              No items match your filter.
+            </div>
           ) : (
             Object.entries(grouped).map(([category, catItems]) => (
               <CategorySection
@@ -231,7 +282,11 @@ export default function PackingPage() {
                 items={catItems}
                 onToggle={toggle}
                 onEdit={setEditItem}
-                onRemove={remove}
+                onRemove={async (id) => {
+                  const ok = await remove(id);
+                  if (ok) toast.success("Item deleted successfully!");
+                  else toast.error("Failed to delete item.");
+                }}
               />
             ))
           )}
@@ -250,8 +305,21 @@ export default function PackingPage() {
       )}
 
       {/* Modals */}
-      {showModal && <ItemModal onClose={() => setShowModal(false)} onSave={handleAdd} loading={mutating} />}
-      {editItem  && <ItemModal initial={editItem} onClose={() => setEditItem(null)} onSave={handleSave} loading={mutating} />}
+      {showModal && (
+        <ItemModal
+          onClose={() => setShowModal(false)}
+          onSave={handleAdd}
+          loading={mutating}
+        />
+      )}
+      {editItem && (
+        <ItemModal
+          initial={editItem}
+          onClose={() => setEditItem(null)}
+          onSave={handleSave}
+          loading={mutating}
+        />
+      )}
     </div>
   );
 }

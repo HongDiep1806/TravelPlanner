@@ -1,6 +1,7 @@
 import { useTripSelection } from "../context/TripSelectionContext";
 import { useEffect, useState, useCallback } from "react";
 import { API_BASE } from "../config";
+import toast from "react-hot-toast";
 import {
   Search,
   Plus,
@@ -412,13 +413,15 @@ export default function ItineraryPage() {
     try {
       const res = await fetch(`${API_BASE}/itinerary/${selectedTripId}/${deleteTargetId}`, { method: "DELETE" });
       if (res.ok) {
+        toast.success("Activity deleted successfully!");
+
         fetchItinerary();
       } else {
         const msg = await res.json().then((d) => d.message).catch(() => `Server error (${res.status})`);
         alert(`Failed to delete activity: ${msg}`);
       }
     } catch {
-      alert("Failed to connect to server");
+      toast.error("Failed to connect to server");
     } finally {
       setDeleteTargetId(null);
     }
@@ -715,7 +718,10 @@ export default function ItineraryPage() {
       {/* ── DROPDOWN MENU ── */}
       {openMenuId && (
         <>
-          <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)} />
+          <div
+            className="fixed inset-0 z-10"
+            onClick={() => setOpenMenuId(null)}
+          />
           <div
             className="fixed z-20 w-36 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden"
             style={{ top: menuPosition.top, right: menuPosition.right }}
