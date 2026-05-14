@@ -1,8 +1,16 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { API_BASE } from "../config";
+import toast from "react-hot-toast";
 
-const CATEGORY_OPTIONS = ["Transport", "Food", "Sightseeing", "Shopping", "Hotel", "Other"];
+const CATEGORY_OPTIONS = [
+  "Transport",
+  "Food",
+  "Sightseeing",
+  "Shopping",
+  "Hotel",
+  "Other",
+];
 const PRIORITY_OPTIONS = ["Low", "Medium", "High"];
 const STATUS_OPTIONS = ["Planned", "In Progress", "Done"];
 
@@ -17,7 +25,13 @@ const EMPTY_FORM = {
 };
 
 // Handles both create (POST) and edit (PUT) based on activityToEdit prop
-const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh, activityToEdit = null }) => {
+const AddActivityModal = ({
+  tripId,
+  isOpen,
+  onClose,
+  onRefresh,
+  activityToEdit = null,
+}) => {
   const isEditMode = Boolean(activityToEdit);
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [loading, setLoading] = useState(false);
@@ -52,14 +66,23 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh, activityToEdit =
       });
 
       if (res.ok) {
+        toast.success(
+          activityToEdit
+            ? "Activity updated successfully!"
+            : "Activity created successfully!",
+        );
+
         onRefresh();
         handleClose();
       } else {
-        const msg = await res.json().then((d) => d.message).catch(() => `Server error (${res.status})`);
-        alert(`Error: ${msg}`);
+        const msg = await res
+          .json()
+          .then((d) => d.message)
+          .catch(() => `Server error (${res.status})`);
+        toast.error(`Failed: ${msg}`);
       }
     } catch {
-      alert("Failed to connect to server");
+      toast.error("Failed to connect to server");
     } finally {
       setLoading(false);
     }
@@ -123,7 +146,9 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh, activityToEdit =
           {/* Date & Time */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Date *</label>
+              <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                Date *
+              </label>
               <input
                 type="date"
                 required
@@ -132,7 +157,9 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh, activityToEdit =
               />
             </div>
             <div className="space-y-2">
-              <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Time *</label>
+              <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                Time *
+              </label>
               <input
                 type="time"
                 required
@@ -145,26 +172,34 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh, activityToEdit =
           {/* Category & Priority */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Category *</label>
+              <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                Category *
+              </label>
               <select
                 required
                 className="w-full bg-slate-50 border-none rounded-2xl px-4 py-3.5 text-slate-800 font-bold"
                 {...field("category")}
               >
                 {CATEGORY_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt}>{opt}</option>
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
                 ))}
               </select>
             </div>
             <div className="space-y-2">
-              <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Priority *</label>
+              <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                Priority *
+              </label>
               <select
                 required
                 className="w-full bg-slate-50 border-none rounded-2xl px-4 py-3.5 text-slate-800 font-bold"
                 {...field("priority")}
               >
                 {PRIORITY_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt}>{opt}</option>
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
                 ))}
               </select>
             </div>
@@ -172,14 +207,18 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh, activityToEdit =
 
           {/* Status */}
           <div className="space-y-2">
-            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Status *</label>
+            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">
+              Status *
+            </label>
             <select
               required
               className="w-full bg-slate-50 border-none rounded-2xl px-4 py-3.5 text-slate-800 font-bold"
               {...field("status")}
             >
               {STATUS_OPTIONS.map((opt) => (
-                <option key={opt} value={opt}>{opt}</option>
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
               ))}
             </select>
           </div>
@@ -198,7 +237,11 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh, activityToEdit =
               disabled={loading}
               className="flex-1 bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all disabled:opacity-50"
             >
-              {loading ? "Saving..." : isEditMode ? "Save Changes" : "Save Activity"}
+              {loading
+                ? "Saving..."
+                : isEditMode
+                  ? "Save Changes"
+                  : "Save Activity"}
             </button>
           </div>
         </form>
