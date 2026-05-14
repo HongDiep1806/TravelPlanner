@@ -68,7 +68,7 @@
         "id": 7,
         "title": "Visit Marble Mountains",
         "location": "Ngu Hanh Son",
-        "date": "2026-05-26",
+        "date": "2026-05-13",
         "time": "08:00",
         "category": "Sightseeing",
         "priority": "Medium",
@@ -131,14 +131,6 @@
         "quantity": 1,
         "requiredStatus": "Optional",
         "packedStatus": "Packed"
-      },
-      {
-        "id": 8,
-        "name": "Ba Na Hill Ticket - Online ticket",
-        "category": "Documents",
-        "quantity": 1,
-        "requiredStatus": "Required",
-        "packedStatus": "Not Packed"
       }
     ],
     "budgetItems": [
