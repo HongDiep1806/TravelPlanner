@@ -1,30 +1,38 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { API_BASE } from "../config";
 
 const CATEGORY_OPTIONS = ["Transport", "Food", "Sightseeing", "Shopping", "Hotel", "Other"];
 const PRIORITY_OPTIONS = ["Low", "Medium", "High"];
 const STATUS_OPTIONS = ["Planned", "In Progress", "Done"];
 
-const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
-  const today = new Date().toISOString().split("T")[0];
+const EMPTY_FORM = {
+  title: "",
+  location: "",
+  date: new Date().toISOString().split("T")[0],
+  time: "09:00",
+  category: "Sightseeing",
+  priority: "Medium",
+  status: "Planned",
+};
 
-  const initialForm = {
-    title: "",
-    location: "",
-    date: today,
-    time: "09:00",
-    category: "Sightseeing",
-    priority: "Medium",
-    status: "Planned",
-  };
-
-  const [formData, setFormData] = useState(initialForm);
+// Handles both create (POST) and edit (PUT) based on activityToEdit prop
+const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh, activityToEdit = null }) => {
+  const isEditMode = Boolean(activityToEdit);
+  const [formData, setFormData] = useState(EMPTY_FORM);
   const [loading, setLoading] = useState(false);
+
+  // Sync form data whenever modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setFormData(activityToEdit ? { ...activityToEdit } : { ...EMPTY_FORM });
+    }
+  }, [isOpen, activityToEdit]);
 
   if (!isOpen) return null;
 
   const handleClose = () => {
-    setFormData(initialForm);
+    setFormData(EMPTY_FORM);
     onClose();
   };
 
@@ -32,9 +40,13 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
     e.preventDefault();
     setLoading(true);
 
+    const url = isEditMode
+      ? `${API_BASE}/itinerary/${tripId}/${activityToEdit.id}`
+      : `${API_BASE}/itinerary/${tripId}`;
+
     try {
-      const res = await fetch(`http://localhost:3000/itinerary/${tripId}`, {
-        method: "POST",
+      const res = await fetch(url, {
+        method: isEditMode ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
@@ -43,29 +55,34 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
         onRefresh();
         handleClose();
       } else {
-        const err = await res.json();
-        alert(`Error: ${err.message}`);
+        const msg = await res.json().then((d) => d.message).catch(() => `Server error (${res.status})`);
+        alert(`Error: ${msg}`);
       }
-    } catch (err) {
+    } catch {
       alert("Failed to connect to server");
     } finally {
       setLoading(false);
     }
   };
 
+  const field = (key) => ({
+    value: formData[key],
+    onChange: (e) => setFormData({ ...formData, [key]: e.target.value }),
+  });
+
   return (
-    <div 
+    <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4"
-      onClick={handleClose} 
+      onClick={handleClose}
     >
-      <div 
+      <div
         className="bg-white rounded-[32px] shadow-2xl w-full max-w-[550px] overflow-hidden animate-in fade-in zoom-in duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-8 pb-0">
           <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-            Add New Activity
+            {isEditMode ? "Edit Activity" : "Add New Activity"}
           </h2>
           <button
             onClick={handleClose}
@@ -86,8 +103,7 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
               required
               className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 text-slate-800 font-bold focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder:text-slate-300"
               placeholder="e.g. Visit Ba Na Hills"
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              {...field("title")}
             />
           </div>
 
@@ -100,8 +116,7 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
               required
               className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 text-slate-800 font-bold focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder:text-slate-300"
               placeholder="e.g. Da Nang"
-              value={formData.location}
-              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+              {...field("location")}
             />
           </div>
 
@@ -112,10 +127,8 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
               <input
                 type="date"
                 required
-                min={today}
                 className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 text-slate-800 font-bold"
-                value={formData.date}
-                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                {...field("date")}
               />
             </div>
             <div className="space-y-2">
@@ -124,8 +137,7 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
                 type="time"
                 required
                 className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 text-slate-800 font-bold"
-                value={formData.time}
-                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                {...field("time")}
               />
             </div>
           </div>
@@ -137,10 +149,9 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
               <select
                 required
                 className="w-full bg-slate-50 border-none rounded-2xl px-4 py-3.5 text-slate-800 font-bold"
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                {...field("category")}
               >
-                {CATEGORY_OPTIONS.map(opt => (
+                {CATEGORY_OPTIONS.map((opt) => (
                   <option key={opt} value={opt}>{opt}</option>
                 ))}
               </select>
@@ -150,10 +161,9 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
               <select
                 required
                 className="w-full bg-slate-50 border-none rounded-2xl px-4 py-3.5 text-slate-800 font-bold"
-                value={formData.priority}
-                onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+                {...field("priority")}
               >
-                {PRIORITY_OPTIONS.map(opt => (
+                {PRIORITY_OPTIONS.map((opt) => (
                   <option key={opt} value={opt}>{opt}</option>
                 ))}
               </select>
@@ -166,10 +176,9 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
             <select
               required
               className="w-full bg-slate-50 border-none rounded-2xl px-4 py-3.5 text-slate-800 font-bold"
-              value={formData.status}
-              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+              {...field("status")}
             >
-              {STATUS_OPTIONS.map(opt => (
+              {STATUS_OPTIONS.map((opt) => (
                 <option key={opt} value={opt}>{opt}</option>
               ))}
             </select>
@@ -189,7 +198,7 @@ const AddActivityModal = ({ tripId, isOpen, onClose, onRefresh }) => {
               disabled={loading}
               className="flex-1 bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all disabled:opacity-50"
             >
-              {loading ? "Saving..." : "Save Activity"}
+              {loading ? "Saving..." : isEditMode ? "Save Changes" : "Save Activity"}
             </button>
           </div>
         </form>
