@@ -610,7 +610,7 @@ export default function ItineraryPage() {
           className="rounded-2xl border overflow-hidden shadow-sm"
           style={{ borderColor: "oklch(0.93 0.03 274)" }}
         >
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-separate border-spacing-0">
             <thead className="hidden md:table-header-group">
               <tr style={{ backgroundColor: "oklch(96% 0.025 274)" }}>
                 {["Date", "Activity", "Location", "Time", "Category", "Priority", "Status", ""].map((h) => (
