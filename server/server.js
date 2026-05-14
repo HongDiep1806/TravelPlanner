@@ -434,6 +434,87 @@ app.delete("/trips/:tripId", (req, res) => {
     data: deletedTrip
   });
 });
+
+// Api Dashboard
+app.get("/dashboard/:tripId", (req, res) => {
+  const data = readData();
+  const tripID = parseInt(req.params.tripId);
+  const trip = data.find((t) => t.id === tripID);
+
+  if (!trip) {
+    return res.status(404).json({ message: "Trip not found" });
+  }
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Itinersary stats
+  const totalItinerary = trip.itinerary.length;
+  const doneItinerary = trip.itinerary.filter((i) => i.status === "Done").length;
+  const itineraryCompletedPercent = 
+    totalItinerary > 0 ? (doneItinerary / totalItinerary) *100 : 0;
+
+  // Overdue items: status != "Done" AND date < today
+  const overdueItems = trip.itinerary.filter((i) => {
+    if (i.status === "Done") return false;
+    const itemDate = new Date(i.date);
+    itemDate.setHours(0, 0, 0, 0);
+    return itemDate < today;
+  });
+
+  // Packing stats
+  const totalPacking = trip.packingList.length;
+  const packedItems = trip.packingList.filter((i) => i.packedStatus === "Packed").length;
+  const packingCompletedPercent =
+    totalPacking > 0 ? (packedItems / totalPacking) * 100 : 0;
+
+  // Budget stats
+  const initialTripBudget = trip.budget;
+  const totalActualCost = trip.budgetItems.reduce(
+    (sum, item) => sum + (Number(item.actualCost) || 0),
+    0
+  );
+  const budgetUsedPercent =
+    initialTripBudget > 0 ? (totalActualCost / initialTripBudget) * 100 : 0;
+
+  const unpaidBudgetItems = trip.budgetItems.filter(
+    (item) => item.paymentStatus === "Unpaid"
+  ).length;
+
+  // Budget warning level
+  let budgetWarning;
+  if (budgetUsedPercent >= 100) {
+    budgetWarning = "critical";
+  } else if (budgetUsedPercent >= 80) {
+    budgetWarning = "warning";
+  } else {
+    budgetWarning = "normal";
+  }
+
+  res.json({
+    tripId: trip.id,
+    tripName: trip.tripName,
+    itinerary: {
+      total: totalItinerary,
+      done: doneItinerary,
+      completedPercent: parseFloat(itineraryCompletedPercent.toFixed(2)),
+      overdueCount: overdueItems.length,
+      overdueItems: overdueItems,
+    },
+    packing: {
+      total: totalPacking,
+      packed: packedItems,
+      completedPercent: parseFloat(packingCompletedPercent.toFixed(2)),
+    },
+    budget: {
+      initial: initialTripBudget,
+      used: totalActualCost,
+      usedPercent: parseFloat(budgetUsedPercent.toFixed(2)),
+      unpaidItemsCount: unpaidBudgetItems,
+      warning: budgetWarning,
+    },
+  });
+});
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
