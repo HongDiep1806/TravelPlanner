@@ -55,9 +55,10 @@ export function usePackingItems(tripId) {
 
     try {
       await deleteItem(tripId, id);
+      return true;
     } catch (err) {
       setItems(snapshot);
-      alert(`Error: ${err.message}`);
+      return false;
     }
   };
 

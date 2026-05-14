@@ -8,10 +8,33 @@ import DashboardPage from "./pages/DashboardPage";
 import ItineraryPage from "./pages/ItineraryPage";
 import PackingPage from "./pages/PackingPage";
 import BudgetPage from "./pages/BudgetPage";
+import { Toaster } from "react-hot-toast";
 
 export default function App() {
   return (
     <BrowserRouter>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            zIndex: 11000,
+            borderRadius: "24px",
+            padding: "16px 24px",
+            fontWeight: "600",
+            color: "#fff",
+            boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+          },
+          success: {
+            style: { background: "#10b981" }, // xanh lá
+            iconTheme: { primary: "#fff", secondary: "#10b981" },
+          },
+          error: {
+            style: { background: "#ef4444" }, // đỏ
+            iconTheme: { primary: "#fff", secondary: "#ef4444" },
+          },
+        }}
+      />
       <Routes>
         {/* MainLayout cho MyTripsPage */}
         <Route path="/" element={<MainLayout />}>
