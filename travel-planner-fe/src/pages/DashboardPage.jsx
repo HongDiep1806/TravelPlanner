@@ -104,9 +104,11 @@ export default function DashboardPage() {
       const [
         dashboardRes,
         itineraryRes,
+        budgetOverviewRes,
       ] = await Promise.all([
         fetch(`http://localhost:3000/dashboard/${tripId}`),
         fetch(`http://localhost:3000/itinerary/${tripId}`),
+        fetch(`http://localhost:3000/dashboard/budget/${tripId}`),
       ]);
       /* ===== DASHBOARD ===== */
       if (dashboardRes.ok) {
@@ -125,6 +127,18 @@ export default function DashboardPage() {
           setItinerary(itineraryData);
         }
       }
+
+    /* ===== BUDGET OVERVIEW ===== */
+    if (budgetOverviewRes.ok) {
+      const budgetOverviewData =
+        await budgetOverviewRes.json();
+
+      if (budgetOverviewData?.length > 0) {
+        setBudgetOverview(budgetOverviewData);
+      } else {
+        setBudgetOverview([]);
+      }
+    }
     } catch (error) {
       console.error("Dashboard fetch error:", error);
 

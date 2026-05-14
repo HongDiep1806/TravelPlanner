@@ -515,6 +515,47 @@ app.get("/dashboard/:tripId", (req, res) => {
     },
   });
 });
+
+//API Budget item
+app.get("/dashboard/budget/:tripId", (req, res) => {
+  const data = readData();
+
+  const trip = data.find(
+    (t) => t.id === parseInt(req.params.tripId)
+  );
+
+  if (!trip) {
+    return res.status(404).json({
+      message: "Trip not found",
+    });
+  }
+
+  const total = trip.budget;
+
+  const grouped = {};
+
+  trip.budgetItems.forEach((item) => {
+    const category = item.category || "Other";
+
+    if (!grouped[category]) {
+      grouped[category] = 0;
+    }
+
+    grouped[category] += Number(item.actualCost) || 0;
+  });
+
+  const result = Object.entries(grouped).map(
+    ([category, amount]) => ({
+      category,
+      percent:
+        total > 0
+          ? Number(((amount / total) * 100).toFixed(1))
+          : 0,
+    })
+  );
+  res.json(result);
+});
+
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
