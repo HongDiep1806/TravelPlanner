@@ -2,6 +2,7 @@ import { useTripSelection } from "../context/TripSelectionContext";
 import { useEffect, useState, useCallback } from "react";
 import AddActivityModal from "../components/AddActivityModal";
 import { API_BASE } from "../config";
+import toast from "react-hot-toast";
 import {
   Search,
   Plus,
@@ -30,7 +31,9 @@ function DeleteConfirmModal({ isOpen, onConfirm, onCancel }) {
           <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center">
             <Trash2 size={24} className="text-red-500" />
           </div>
-          <h3 className="text-xl font-black text-slate-800">Delete Activity?</h3>
+          <h3 className="text-xl font-black text-slate-800">
+            Delete Activity?
+          </h3>
           <p className="text-sm text-slate-400 font-medium leading-relaxed">
             This activity will be permanently removed and cannot be recovered.
           </p>
@@ -101,17 +104,22 @@ export default function ItineraryPage() {
     try {
       const res = await fetch(
         `${API_BASE}/itinerary/${selectedTripId}/${deleteTargetId}`,
-        { method: "DELETE" }
+        { method: "DELETE" },
       );
       if (res.ok) {
+        toast.success("Activity deleted successfully!");
+
         fetchItinerary();
       } else {
         // Safe parse: server may return non-JSON on unexpected errors
-        const msg = await res.json().then((d) => d.message).catch(() => `Server error (${res.status})`);
-        alert(`Failed to delete activity: ${msg}`);
+        const msg = await res
+          .json()
+          .then((d) => d.message)
+          .catch(() => `Server error (${res.status})`);
+        toast.error(`Failed to delete activity: ${msg}`);
       }
     } catch {
-      alert("Failed to connect to server");
+      toast.error("Failed to connect to server");
     } finally {
       setDeleteTargetId(null);
     }
@@ -261,7 +269,16 @@ export default function ItineraryPage() {
         <table className="w-full text-left border-collapse">
           <thead className="hidden md:table-header-group bg-gray-50/80">
             <tr>
-              {["Date", "Activity", "Location", "Time", "Category", "Priority", "Status", ""].map((h) => (
+              {[
+                "Date",
+                "Activity",
+                "Location",
+                "Time",
+                "Category",
+                "Priority",
+                "Status",
+                "",
+              ].map((h) => (
                 <th
                   key={h}
                   className="px-6 py-5 text-[11px] font-bold text-gray-400 uppercase tracking-[0.1em]"
@@ -284,13 +301,17 @@ export default function ItineraryPage() {
               >
                 {/* Date */}
                 <td className="block md:table-cell px-6 py-4 md:py-6 text-[15px] text-gray-500 font-medium">
-                  <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">Date</span>
+                  <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">
+                    Date
+                  </span>
                   <span className="whitespace-nowrap">{item.date}</span>
                 </td>
 
                 {/* Activity Title */}
                 <td className="block md:table-cell px-6 py-2 md:py-6">
-                  <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">Activity</span>
+                  <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">
+                    Activity
+                  </span>
                   <span className="text-[17px] md:text-[16px] font-bold text-gray-800 leading-tight">
                     {item.title}
                   </span>
@@ -298,34 +319,52 @@ export default function ItineraryPage() {
 
                 {/* Location */}
                 <td className="block md:table-cell px-6 py-2 md:py-6 text-[15px] text-gray-400">
-                  <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">Location</span>
-                  <div className="max-w-[200px] truncate md:whitespace-normal">{item.location}</div>
+                  <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">
+                    Location
+                  </span>
+                  <div className="max-w-[200px] truncate md:whitespace-normal">
+                    {item.location}
+                  </div>
                 </td>
 
                 {/* Time */}
                 <td className="block md:table-cell px-6 py-2 md:py-6 text-[15px] text-gray-600 font-semibold">
-                  <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">Time</span>
+                  <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">
+                    Time
+                  </span>
                   {item.time}
                 </td>
 
                 {/* Category */}
-                <td className={`block md:table-cell px-6 py-2 md:py-6 text-[15px] font-bold ${categoryColors[item.category] || "text-gray-500"}`}>
-                  <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">Category</span>
+                <td
+                  className={`block md:table-cell px-6 py-2 md:py-6 text-[15px] font-bold ${categoryColors[item.category] || "text-gray-500"}`}
+                >
+                  <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">
+                    Category
+                  </span>
                   {item.category}
                 </td>
 
                 {/* Priority */}
                 <td className="block md:table-cell px-6 py-3 md:py-6">
-                  <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">Priority</span>
-                  <span className={`inline-flex items-center justify-center px-2 py-0.5 min-w-[60px] rounded-md text-[10px] font-black uppercase tracking-tighter border ${priorityStyles[item.priority] || "bg-gray-50 text-gray-400 border-gray-100"}`}>
+                  <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">
+                    Priority
+                  </span>
+                  <span
+                    className={`inline-flex items-center justify-center px-2 py-0.5 min-w-[60px] rounded-md text-[10px] font-black uppercase tracking-tighter border ${priorityStyles[item.priority] || "bg-gray-50 text-gray-400 border-gray-100"}`}
+                  >
                     {item.priority}
                   </span>
                 </td>
 
                 {/* Status */}
                 <td className="block md:table-cell px-6 py-3 md:py-6">
-                  <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">Status</span>
-                  <span className={`inline-flex items-center justify-center px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap border shadow-sm ${statusStyles[item.status] || "bg-gray-50 text-gray-400 border-gray-200"}`}>
+                  <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">
+                    Status
+                  </span>
+                  <span
+                    className={`inline-flex items-center justify-center px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap border shadow-sm ${statusStyles[item.status] || "bg-gray-50 text-gray-400 border-gray-200"}`}
+                  >
                     {item.status}
                   </span>
                 </td>
@@ -338,7 +377,10 @@ export default function ItineraryPage() {
                         setOpenMenuId(null);
                       } else {
                         const rect = e.currentTarget.getBoundingClientRect();
-                        setMenuPosition({ top: rect.bottom + 8, right: window.innerWidth - rect.right });
+                        setMenuPosition({
+                          top: rect.bottom + 8,
+                          right: window.innerWidth - rect.right,
+                        });
                         setOpenMenuId(Number(item.id));
                       }
                     }}
@@ -356,7 +398,10 @@ export default function ItineraryPage() {
       {/* Dropdown menu — rendered outside overflow-hidden table to avoid clipping */}
       {openMenuId && (
         <>
-          <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)} />
+          <div
+            className="fixed inset-0 z-10"
+            onClick={() => setOpenMenuId(null)}
+          />
           <div
             className="fixed z-20 w-36 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden"
             style={{ top: menuPosition.top, right: menuPosition.right }}
