@@ -766,14 +766,20 @@ export default function ItineraryPage() {
                 filteredData.map((item) => (
                   <tr
                     key={item.id}
-                    className={`block md:table-row transition-all group border-l-4 ${
+                    className={`block md:table-row transition-all group ${
                       isOverdue(item)
-                        ? "border-red-300 hover:bg-red-50/40"
-                        : "border-transparent hover:bg-indigo-50/30"
+                        ? "bg-red-50 hover:bg-red-100"
+                        : "hover:bg-indigo-50/30"
                     }`}
                   >
                     {/* Date */}
-                    <td className="block md:table-cell px-6 py-4 md:py-5 text-sm text-gray-500">
+                    <td
+                      className={`block md:table-cell px-6 py-4 md:py-5 text-sm text-gray-500 ${
+                        isOverdue(item)
+                          ? "border-l-4 border-red-500"
+                          : "border-l-4 border-transparent"
+                      }`}
+                    >
                       <span className="md:hidden text-[10px] font-bold text-gray-400 uppercase block mb-1">
                         Date
                       </span>
