@@ -1,38 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   CalendarDays,
-  Backpack,
-  Wallet,
   RefreshCcw,
-  Settings,
-  Map,
-  ChevronRight,
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 
 /* ================= MOCK DATA DÙNG CHO TRƯỜNG HỢP CHƯA CÓ BACKEND ================= */
-
-const mockTripInfo = {
-  tripName: "Da Nang Family Trip",
-  startDate: "Jun 10, 2026",
-  endDate: "Jun 15, 2026",
-};
-
-const mockDashboard = {
-  itineraryCompletedPercent: 65,
-  packingCompletedPercent: 10,
-  budgetUsedPercent: 72,
-
-  completedItineraryItems: 13,
-  totalItineraryItems: 20,
-
-  unpaidBudgetItems: 3,
-  overdueItineraryItems: 2,
-
-  totalSpent: 8640000,
-  totalBudget: 12000000,
-};
-
 const mockItinerary = [
   {
     id: 1,
@@ -93,38 +66,25 @@ const mockBudgetOverview = [
   },
 ];
 
-const mockPackingItems = [
-  {
-    id: 1,
-    itemName: "T-Shirt",
-    packedStatus: "Packed",
+const mockDashboard = {
+  itinerary: {
+    total: 20,
+    done: 13,
+    completedPercent: 65,
+    overdueCount: 2,
   },
-  {
-    id: 2,
-    itemName: "Shoes",
-    packedStatus: "Packed",
+  packing: {
+    total: 20,
+    packed: 5,
+    completedPercent: 25,
   },
-  {
-    id: 3,
-    itemName: "Passport",
-    packedStatus: "Packed",
+  budget: {
+    initial: 12000000,
+    used: 8600000,
+    usedPercent: 72,
+    unpaidItemsCount: 3,
   },
-  {
-    id: 4,
-    itemName: "Sunscreen",
-    packedStatus: "Packed",
-  },
-  {
-    id: 5,
-    itemName: "Camera",
-    packedStatus: "NotPacked",
-  },
-  {
-    id: 6,
-    itemName: "Hat",
-    packedStatus: "NotPacked",
-  },
-];
+};
 
 /* ================= PAGE ================= */
 
@@ -134,8 +94,6 @@ export default function DashboardPage() {
   const [dashboard, setDashboard] = useState(mockDashboard);
   const [itinerary, setItinerary] = useState(mockItinerary);
   const [budgetOverview, setBudgetOverview] = useState(mockBudgetOverview);
-  const [packingItems, setPackingItems] =useState(mockPackingItems);
-  const [tripInfo, setTripInfo] = useState(mockTripInfo);
 
   const [loading, setLoading] = useState(true);
 
@@ -146,19 +104,12 @@ export default function DashboardPage() {
       const [
         dashboardRes,
         itineraryRes,
-        budgetRes,
-        packingRes,
-        tripRes,
+        budgetOverviewRes,
       ] = await Promise.all([
-        fetch(`http://localhost:3000/api/trips/${tripId}/dashboard`),
-        fetch(`http://localhost:3000/api/trips/${tripId}/itinerary`),
-        fetch(
-          `http://localhost:3000/api/trips/${tripId}/budget?groupBy=category`
-        ),
-        fetch(`http://localhost:3000/api/trips/${tripId}/packing`),
-        fetch(`http://localhost:3000/api/trips/${tripId}`),
+        fetch(`http://localhost:3000/dashboard/${tripId}`),
+        fetch(`http://localhost:3000/itinerary/${tripId}`),
+        fetch(`http://localhost:3000/dashboard/budget/${tripId}`),
       ]);
-
       /* ===== DASHBOARD ===== */
       if (dashboardRes.ok) {
         const dashboardData = await dashboardRes.json();
@@ -177,32 +128,17 @@ export default function DashboardPage() {
         }
       }
 
-      /* ===== BUDGET ===== */
-      if (budgetRes.ok) {
-        const budgetData = await budgetRes.json();
+    /* ===== BUDGET OVERVIEW ===== */
+    if (budgetOverviewRes.ok) {
+      const budgetOverviewData =
+        await budgetOverviewRes.json();
 
-        if (budgetData?.length > 0) {
-          setBudgetOverview(budgetData);
-        }
+      if (budgetOverviewData?.length > 0) {
+        setBudgetOverview(budgetOverviewData);
+      } else {
+        setBudgetOverview([]);
       }
-
-      /* ===== PACKING ===== */
-      if (packingRes.ok) {
-        const packingData = await packingRes.json();
-
-        if (packingData?.length > 0) {
-          setPackingItems(packingData);
-        }
-      }
-
-      /* ===== TRIP ===== */
-      if (tripRes.ok) {
-        const tripData = await tripRes.json();
-
-        if (tripData) {
-          setTripInfo(tripData);
-        }
-      }
+    }
     } catch (error) {
       console.error("Dashboard fetch error:", error);
 
@@ -221,7 +157,7 @@ export default function DashboardPage() {
   const groupedItinerary = useMemo(() => {
     const grouped = {};
 
-    itinerary.forEach((item) => {
+    itinerary?.forEach((item) => {
       const date = item.date;
 
       if (!grouped[date]) {
@@ -234,19 +170,11 @@ export default function DashboardPage() {
     return Object.entries(grouped);
   }, [itinerary]);
 
-  const totalPacked = packingItems.filter(
-    (item) => item.packedStatus === "Packed"
-  ).length;
-
-  const packingPercent =
-    packingItems.length > 0
-      ? Math.round((totalPacked / packingItems.length) * 100)
-      : 0;
-
-  if (loading && !dashboard) {
+  if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen text-gray-500">
-        Loading dashboard...
+      <div className="flex flex-col items-center justify-center h-screen gap-3 text-gray-500">
+        <RefreshCcw className="animate-spin" size={28} />
+        <p>Loading dashboard...</p>
       </div>
     );
   }
@@ -259,7 +187,7 @@ export default function DashboardPage() {
           <div className="flex items-start justify-between mb-8">
             <div>
               <h1 className="text-4xl font-bold text-gray-900">
-                Dashboard
+                {dashboard?.tripName || "Dashboard"}
               </h1>
 
               <p className="text-gray-500 mt-2">
@@ -280,35 +208,35 @@ export default function DashboardPage() {
           <div className="grid grid-cols-5 gap-5 mb-7">
             <StatCard
               title="Itinerary Completed"
-              value={`${dashboard.itineraryCompletedPercent}%`}
+              value={`${dashboard?.itinerary?.completedPercent || 0}%`}
               color="text-green-500"
-              subtitle={`${dashboard.completedItineraryItems} / ${dashboard.totalItineraryItems} activities`}
+              subtitle={`${dashboard?.itinerary?.done || 0} / ${dashboard?.itinerary?.total || 0} activities`}
             />
 
             <StatCard
               title="Packing Completed"
-              value={`${packingPercent}%`}
+              value={`${dashboard?.packing?.completedPercent || 0}%`}
               color="text-yellow-500"
-              subtitle={`${totalPacked} / ${packingItems.length} items`}
+              subtitle={`${dashboard?.packing?.packed || 0} / ${dashboard?.packing?.total || 0} items`}
             />
 
             <StatCard
               title="Budget Used"
-              value={`${dashboard.budgetUsedPercent}%`}
+              value={`${dashboard?.budget?.usedPercent || 0}%`}
               color="text-red-500"
-              subtitle={`${dashboard.totalSpent?.toLocaleString()} / ${dashboard.totalBudget?.toLocaleString()} VND`}
+              subtitle={`${(dashboard?.budget?.used || 0).toLocaleString()} / ${(dashboard?.budget?.initial || 0).toLocaleString()} VND`}
             />
 
             <StatCard
               title="Unpaid Items"
-              value={dashboard.unpaidBudgetItems}
+              value={dashboard?.budget?.unpaidItemsCount || 0}
               color="text-blue-500"
               subtitle="Budget items"
             />
 
             <StatCard
               title="Overdue Activities"
-              value={dashboard.overdueItineraryItems}
+              value={dashboard?.itinerary?.overdueCount || 0}
               color="text-red-500"
               subtitle="Activities"
             />
@@ -422,7 +350,8 @@ export default function DashboardPage() {
                       fill="none"
                       strokeDasharray={326}
                       strokeDashoffset={
-                        326 - (326 * packingPercent) / 100
+                        326 -
+                        ((326 * (dashboard?.packing?.completedPercent || 0)) / 100)
                       }
                       strokeLinecap="round"
                     />
@@ -430,13 +359,13 @@ export default function DashboardPage() {
 
                   <div className="absolute inset-0 flex items-center justify-center">
                     <span className="text-4xl font-bold">
-                      {packingPercent}%
+                      {dashboard?.packing?.completedPercent || 0}%
                     </span>
                   </div>
                 </div>
 
                 <p className="text-gray-500 mt-5">
-                  {totalPacked} / {packingItems.length} items packed
+                  {dashboard?.packing?.packed || 0} / {dashboard?.packing?.total || 0} items packed
                 </p>
               </div>
 
