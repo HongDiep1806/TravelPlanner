@@ -435,6 +435,175 @@ app.delete("/trips/:tripId", (req, res) => {
   });
 });
 
+// ============================Budget Items API Endpoints========================================
+
+const VALID_BUDGET_CATEGORIES = ["Transport", "Accommodation", "Food", "Activity", "Shopping", "Other"];
+const VALID_PAYMENT_STATUS    = ["Paid", "Unpaid"];
+
+// 1. Get all budget items for a specific trip
+app.get("/budget-items/:tripId", (req, res) => {
+  const data = readData();
+  const trip = data.find((t) => t.id === parseInt(req.params.tripId));
+
+  if (!trip) {
+    return res.status(404).json({ message: "Trip not found" });
+  }
+
+  res.json(trip.budgetItems);
+});
+
+// 2. Get a specific budget item by tripId and item ID
+app.get("/budget-items/:tripId/:id", (req, res) => {
+  const data = readData();
+  const trip = data.find((t) => t.id === parseInt(req.params.tripId));
+
+  if (!trip) {
+    return res.status(404).json({ message: "Trip not found" });
+  }
+
+  const item = trip.budgetItems.find((i) => i.id === parseInt(req.params.id));
+
+  if (!item) {
+    return res.status(404).json({ message: "Budget item not found" });
+  }
+
+  res.json(item);
+});
+
+// 3. Add a new budget item to a specific trip
+app.post("/budget-items/:tripId", (req, res) => {
+  const data = readData();
+  const tripId = parseInt(req.params.tripId);
+  const trip = data.find((t) => t.id === tripId);
+
+  if (!trip) {
+    return res.status(404).json({ message: "Trip not found" });
+  }
+
+  const { name, category, estimatedCost, actualCost, paymentStatus } = req.body;
+
+  const requiredFields = ["name", "category", "paymentStatus"];
+  const missingFields = requiredFields.filter(
+    (field) => !req.body[field] || req.body[field].toString().trim() === ""
+  );
+
+  if (missingFields.length > 0) {
+    return res.status(400).json({ message: "Missing or empty required fields", missingFields });
+  }
+
+  if (!VALID_BUDGET_CATEGORIES.includes(category)) {
+    return res.status(400).json({
+      message: `Invalid category. Must be one of: ${VALID_BUDGET_CATEGORIES.join(", ")}`,
+    });
+  }
+
+  if (!VALID_PAYMENT_STATUS.includes(paymentStatus)) {
+    return res.status(400).json({
+      message: `Invalid paymentStatus. Must be one of: ${VALID_PAYMENT_STATUS.join(", ")}`,
+    });
+  }
+
+  const estimated = Number(estimatedCost) || 0;
+  const actual = Number(actualCost) || 0;
+
+  if (estimated < 0 || actual < 0) {
+    return res.status(400).json({ message: "estimatedCost and actualCost must be non-negative numbers" });
+  }
+
+  const maxId = trip.budgetItems.reduce((max, item) => (item.id > max ? item.id : max), 0);
+  const newItem = {
+    id: maxId + 1,
+    name: name.trim(),
+    category,
+    estimatedCost: estimated,
+    actualCost: actual,
+    paymentStatus,
+  };
+
+  trip.budgetItems.push(newItem);
+  writeData(data);
+
+  res.status(201).json({ message: "Budget item created successfully", data: newItem });
+});
+
+// 4. Update an existing budget item by tripId and item ID
+// note: all fields (even unchanged ones) must be included in the request body
+app.put("/budget-items/:tripId/:id", (req, res) => {
+  const data = readData();
+  const tripId = parseInt(req.params.tripId);
+  const itemId = parseInt(req.params.id);
+
+  const trip = data.find((t) => t.id === tripId);
+  if (!trip) {
+    return res.status(404).json({ message: "Trip not found" });
+  }
+
+  const index = trip.budgetItems.findIndex((i) => i.id === itemId);
+  if (index === -1) {
+    return res.status(404).json({ message: "Budget item not found" });
+  }
+
+  if (Object.keys(req.body).length === 0) {
+    return res.status(400).json({ message: "Update data cannot be empty" });
+  }
+
+  const { name, category, estimatedCost, actualCost, paymentStatus } = req.body;
+
+  const requiredFields = ["name", "category", "paymentStatus"];
+  const missingFields = requiredFields.filter(
+    (field) => !req.body[field] || req.body[field].toString().trim() === ""
+  );
+
+  if (missingFields.length > 0) {
+    return res.status(400).json({ message: "Missing or empty required fields", missingFields });
+  }
+
+  if (!VALID_BUDGET_CATEGORIES.includes(category)) {
+    return res.status(400).json({
+      message: `Invalid category. Must be one of: ${VALID_BUDGET_CATEGORIES.join(", ")}`,
+    });
+  }
+
+  if (!VALID_PAYMENT_STATUS.includes(paymentStatus)) {
+    return res.status(400).json({
+      message: `Invalid paymentStatus. Must be one of: ${VALID_PAYMENT_STATUS.join(", ")}`,
+    });
+  }
+
+  const estimated = Number(estimatedCost) || 0;
+  const actual = Number(actualCost) || 0;
+
+  if (estimated < 0 || actual < 0) {
+    return res.status(400).json({ message: "estimatedCost and actualCost must be non-negative numbers" });
+  }
+
+  trip.budgetItems[index] = { id: itemId, name: name.trim(), category, estimatedCost: estimated, actualCost: actual, paymentStatus };
+  writeData(data);
+
+  res.json(trip.budgetItems[index]);
+});
+
+// 5. Delete a budget item by tripId and item ID
+app.delete("/budget-items/:tripId/:id", (req, res) => {
+  const data = readData();
+  const trip = data.find((t) => t.id === parseInt(req.params.tripId));
+
+  if (!trip) {
+    return res.status(404).json({ message: "Trip not found" });
+  }
+
+  const index = trip.budgetItems.findIndex((i) => i.id === parseInt(req.params.id));
+
+  if (index === -1) {
+    return res.status(404).json({ message: "Budget item not found" });
+  }
+
+  const deletedItem = trip.budgetItems.splice(index, 1);
+  writeData(data);
+
+  res.json(deletedItem);
+});
+
 // Api Dashboard
 app.get("/dashboard/:tripId", (req, res) => {
   const data = readData();

@@ -1,5 +1,8 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { Plus, MoreVertical, Pencil, Trash2, X, Check, AlertTriangle, AlertCircle, Loader2, SlidersHorizontal } from "lucide-react";
+import { useTripSelection } from "../context/TripSelectionContext";
+import { API_BASE } from "../config";
+import toast from "react-hot-toast";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const INDIGO = "oklch(51.1% 0.262 276.966)";
@@ -15,16 +18,22 @@ const CATEGORY_COLORS = {
   Other: "#06B6D4",
 };
 
-const initialItems = [
-  { id: 1, name: "Flight tickets", category: "Transport", estimated: 4000000, actual: 4200000, paid: true },
-  { id: 2, name: "Hotel (5 nights)", category: "Accommodation", estimated: 3001000, actual: 2860000, paid: true },
-  { id: 3, name: "Food", category: "Food", estimated: 2450000, actual: 1900000, paid: false },
-  { id: 4, name: "Ba Na Hills Ticket", category: "Activity", estimated: 1206000, actual: 1050000, paid: true },
-  { id: 5, name: "Shopping", category: "Shopping", estimated: 600000, actual: 743000, paid: false },
-  { id: 6, name: "Airport Taxi", category: "Transport", estimated: 300000, actual: 300000, paid: true },
-];
+// Map API budget item → frontend shape
+const fromApi = (item) => ({
+  ...item,
+  estimated: item.estimatedCost,
+  actual: item.actualCost,
+  paid: item.paymentStatus === "Paid",
+});
 
-const DEFAULT_INITIAL_BUDGET = 12000000;
+// Map frontend form → API request body
+const toApi = (form) => ({
+  name: form.name,
+  category: form.category,
+  estimatedCost: Number(form.estimated || 0),
+  actualCost: Number(form.actual || 0),
+  paymentStatus: form.paid ? "Paid" : "Unpaid",
+});
 
 // ─── Donut Chart ──────────────────────────────────────────────────────────────
 function DonutChart({ data }) {
@@ -178,7 +187,14 @@ function ItemModal({ initial, onClose, onSave, loading }) {
             </div>
             <div>
               <label className={labelCls}>Actual (VND)</label>
-              <input type="number" className={inputCls} placeholder="0" value={form.actual} onChange={(e) => set("actual", e.target.value)} />
+              <input
+                type="number"
+                className={inputCls}
+                placeholder="0"
+                value={form.actual}
+                onChange={(e) => set("actual", e.target.value)}
+                onFocus={() => { if (!Number(form.actual)) set("actual", form.estimated); }}
+              />
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -442,16 +458,42 @@ function BudgetProgressPanel({ totalActual, totalEstimated, initialBudget }) {
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export default function BudgetPage() {
-  const [items, setItems] = useState(initialItems);
-  const [initialBudget, setInitialBudget] = useState(DEFAULT_INITIAL_BUDGET);
+  const { selectedTripId } = useTripSelection();
+  const [items, setItems] = useState([]);
+  const [initialBudget, setInitialBudget] = useState(0);
+  const [tripName, setTripName] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [showEditBudget, setShowEditBudget] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
 
+  useEffect(() => {
+    if (!selectedTripId) return;
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [itemsRes, tripRes] = await Promise.all([
+          fetch(`${API_BASE}/budget-items/${selectedTripId}`),
+          fetch(`${API_BASE}/trips/${selectedTripId}`),
+        ]);
+        const [itemsData, tripData] = await Promise.all([itemsRes.json(), tripRes.json()]);
+        setItems(itemsData.map(fromApi));
+        setInitialBudget(tripData.budget);
+        setTripName(tripData.tripName);
+      } catch {
+        toast.error("Failed to load budget data");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [selectedTripId]);
+
   const totalEstimated = useMemo(() => items.reduce((s, i) => s + Number(i.estimated || 0), 0), [items]);
-  const totalActual = useMemo(() => items.reduce((s, i) => s + Number(i.actual || 0), 0), [items]);
+  const totalActual = useMemo(() => items.filter((i) => i.paid).reduce((s, i) => s + Number(i.actual || 0), 0), [items]);
   const remaining = initialBudget - totalActual;
   const budgetPct = initialBudget > 0 ? (totalActual / initialBudget) * 100 : 0;
 
@@ -479,26 +521,79 @@ export default function BudgetPage() {
 
   const activeFilterCount = (filters.category !== "All" ? 1 : 0) + (filters.paid !== "All" ? 1 : 0);
 
-  const handleAdd = (form) => {
-    setItems((prev) => [
-      ...prev,
-      { id: Date.now(), name: form.name, category: form.category, estimated: Number(form.estimated || 0), actual: Number(form.actual || 0), paid: form.paid },
-    ]);
-    setShowModal(false);
+  const handleAdd = async (form) => {
+    setSaving(true);
+    try {
+      const res = await fetch(`${API_BASE}/budget-items/${selectedTripId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(toApi(form)),
+      });
+      if (!res.ok) throw new Error();
+      const { data } = await res.json();
+      setItems((prev) => [...prev, fromApi(data)]);
+      setShowModal(false);
+      toast.success("Budget item added");
+    } catch {
+      toast.error("Failed to add budget item");
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleSave = (form) => {
-    setItems((prev) =>
-      prev.map((i) =>
-        i.id === editItem.id
-          ? { ...i, name: form.name, category: form.category, estimated: Number(form.estimated || 0), actual: Number(form.actual || 0), paid: form.paid }
-          : i
-      )
+  const handleSave = async (form) => {
+    setSaving(true);
+    try {
+      const res = await fetch(`${API_BASE}/budget-items/${selectedTripId}/${editItem.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(toApi(form)),
+      });
+      if (!res.ok) throw new Error();
+      const updated = await res.json();
+      setItems((prev) => prev.map((i) => (i.id === editItem.id ? fromApi(updated) : i)));
+      setEditItem(null);
+      toast.success("Budget item updated");
+    } catch {
+      toast.error("Failed to update budget item");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(`${API_BASE}/budget-items/${selectedTripId}/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error();
+      setItems((prev) => prev.filter((i) => i.id !== id));
+      toast.success("Budget item deleted");
+    } catch {
+      toast.error("Failed to delete budget item");
+    }
+  };
+
+  const handleSaveBudget = async (newBudget) => {
+    try {
+      const res = await fetch(`${API_BASE}/trips/${selectedTripId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tripName, budget: newBudget }),
+      });
+      if (!res.ok) throw new Error();
+      setInitialBudget(newBudget);
+      toast.success("Budget updated");
+    } catch {
+      toast.error("Failed to update budget");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 size={32} className="animate-spin text-indigo-400" />
+      </div>
     );
-    setEditItem(null);
-  };
-
-  const handleDelete = (id) => setItems((prev) => prev.filter((i) => i.id !== id));
+  }
 
   return (
     <div className="bg-white rounded-3xl p-4 sm:p-8 min-h-full shadow-sm">
@@ -540,6 +635,32 @@ export default function BudgetPage() {
           </button>
         </div>
       </div>
+
+      {/* ── BUDGET ALERT BANNER ── */}
+      {budgetPct >= 100 && (
+        <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-2xl px-5 py-4 mb-6">
+          <AlertCircle size={20} className="text-red-500 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-bold text-red-600">Over budget!</p>
+            <p className="text-sm text-red-500 mt-0.5">
+              Your actual spending ({budgetPct.toFixed(1)}% of budget) has exceeded the initial budget of{" "}
+              <span className="font-semibold">{initialBudget.toLocaleString("vi-VN")} VND</span>. Review your expenses immediately.
+            </p>
+          </div>
+        </div>
+      )}
+      {budgetPct >= 80 && budgetPct < 100 && (
+        <div className="flex items-start gap-3 bg-orange-50 border border-orange-200 rounded-2xl px-5 py-4 mb-6">
+          <AlertTriangle size={20} className="text-orange-500 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-bold text-orange-600">Budget warning</p>
+            <p className="text-sm text-orange-500 mt-0.5">
+              You've used <span className="font-semibold">{budgetPct.toFixed(1)}%</span> of your budget.{" "}
+              Only <span className="font-semibold">{remaining.toLocaleString("vi-VN")} VND</span> remaining — spend carefully.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* ── ROW 1: 4 SUMMARY CARDS ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -689,14 +810,14 @@ export default function BudgetPage() {
         <EditBudgetModal
           current={initialBudget}
           onClose={() => setShowEditBudget(false)}
-          onSave={setInitialBudget}
+          onSave={handleSaveBudget}
         />
       )}
       {showModal && (
-        <ItemModal onClose={() => setShowModal(false)} onSave={handleAdd} loading={false} />
+        <ItemModal onClose={() => setShowModal(false)} onSave={handleAdd} loading={saving} />
       )}
       {editItem && (
-        <ItemModal initial={editItem} onClose={() => setEditItem(null)} onSave={handleSave} loading={false} />
+        <ItemModal initial={editItem} onClose={() => setEditItem(null)} onSave={handleSave} loading={saving} />
       )}
     </div>
   );
