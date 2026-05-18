@@ -17,6 +17,7 @@ export default function MyTripsPage() {
   const fetchTrips = async () => {
     try {
       const res = await fetch("http://localhost:3000/trips");
+      console.log("trips: ", res);
       const data = await res.json();
 
       const demoImages = [
@@ -37,6 +38,7 @@ export default function MyTripsPage() {
       }));
 
       setTrips(mappedTrips);
+      
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu:", error);
     } finally {

@@ -131,6 +131,14 @@
         "quantity": 1,
         "requiredStatus": "Optional",
         "packedStatus": "Packed"
+      },
+      {
+        "id": 8,
+        "name": "Passport",
+        "category": "Personal",
+        "quantity": 1,
+        "requiredStatus": "Required",
+        "packedStatus": "Not Packed"
       }
     ],
     "budgetItems": [
@@ -148,15 +156,15 @@
         "category": "Accommodation",
         "estimatedCost": 3600000,
         "actualCost": 3600000,
-        "paymentStatus": "Unpaid"
+        "paymentStatus": "Paid"
       },
       {
         "id": 3,
         "name": "Ba Na Hills entrance fee",
         "category": "Activity",
         "estimatedCost": 1800000,
-        "actualCost": 0,
-        "paymentStatus": "Unpaid"
+        "actualCost": 1800000,
+        "paymentStatus": "Paid"
       },
       {
         "id": 4,
@@ -171,8 +179,8 @@
         "name": "Souvenirs & gifts",
         "category": "Shopping",
         "estimatedCost": 1000000,
-        "actualCost": 0,
-        "paymentStatus": "Unpaid"
+        "actualCost": 1000000,
+        "paymentStatus": "Paid"
       },
       {
         "id": 6,
@@ -187,8 +195,8 @@
         "name": "2-day motorbike rental",
         "category": "Transport",
         "estimatedCost": 200000,
-        "actualCost": 0,
-        "paymentStatus": "Unpaid"
+        "actualCost": 200000,
+        "paymentStatus": "Paid"
       }
     ]
   },
@@ -967,7 +975,7 @@
   {
     "id": 6,
     "tripName": "Phu Quoc Trip",
-    "budget": 5000000,
+    "budget": 10000000,
     "itinerary": [
       {
         "id": 1,
@@ -1000,6 +1008,63 @@
         "packedStatus": "Packed"
       }
     ],
-    "budgetItems": []
+    "budgetItems": [
+      {
+        "id": 1,
+        "name": "Flight tickets",
+        "category": "Transport",
+        "estimatedCost": 1000000,
+        "actualCost": 1000000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 2,
+        "name": "Souvenirs for mama and dada",
+        "category": "Shopping",
+        "estimatedCost": 500000,
+        "actualCost": 500000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 3,
+        "name": "Homestay Reservation",
+        "category": "Accommodation",
+        "estimatedCost": 1000000,
+        "actualCost": 1000000,
+        "paymentStatus": "Paid"
+      },
+      {
+        "id": 4,
+        "name": "Bar all nights",
+        "category": "Activity",
+        "estimatedCost": 800000,
+        "actualCost": 800000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 5,
+        "name": "Satisfy my stomach",
+        "category": "Food",
+        "estimatedCost": 1800000,
+        "actualCost": 1800000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 6,
+        "name": "Vinpearl Safari",
+        "category": "Activity",
+        "estimatedCost": 350000,
+        "actualCost": 350000,
+        "paymentStatus": "Unpaid"
+      },
+      {
+        "id": 7,
+        "name": "VinWonders",
+        "category": "Transport",
+        "estimatedCost": 2000000,
+        "actualCost": 2000000,
+        "paymentStatus": "Unpaid"
+      }
+    ]
   }
 ]
